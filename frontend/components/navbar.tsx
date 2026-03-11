@@ -1,6 +1,11 @@
-import { OwnerProfile } from "@/types/owner_profile";
+"use client";
 
-export default function Navbar({ profile }: { profile?: OwnerProfile }) {
+import { useProfile } from "@/context/profile_context";
+
+export default function Navbar() {
+
+  const profile = useProfile();
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl">
       <div className="p-5 text-lg flex justify-around items-center tracking-widest">

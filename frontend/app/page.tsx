@@ -1,13 +1,26 @@
+"use client";
+
+import { useProfile } from "@/context/profile_context";
+
 export default function Home() {
+  const profile = useProfile();
+
   return (
     <>
-      <section id="hero" className="flex flex-col items-center justify-center text-center min-h-screen">
-        <h1 className="font-title text-5xl text-primary">
-          Banana Lord
-        </h1>
+      <section
+        id="hero"
+        className="flex flex-col items-center justify-center text-center min-h-screen"
+      >
+        <p className="uppercase">
+          Indie Game Developer
+        </p>
+
+        <p className="uppercase text-primary text-3xl">
+          {profile.main_quote}
+        </p>
 
         <p className="font-body text-lg text-textmaincolor mt-4">
-          Gameplay Programmer
+          {profile.sub_quote}
         </p>
       </section>
 
