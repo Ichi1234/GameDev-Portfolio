@@ -3,6 +3,7 @@ import { Rajdhani, Cinzel } from "next/font/google";
 import "./globals.css";
 
 import Navbar from "../components/navbar";
+import Footer from "@/components/footer";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -28,9 +29,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-background">
-      <body className={`${cinzel.variable} ${rajdhani.variable} bg-background`}>
+      <body className={`${cinzel.variable} ${rajdhani.variable} bg-background text-textmaincolor`}>
         <Navbar />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen bg-background">{children}</main>
+        <Footer />
       </body>
     </html>
   );
