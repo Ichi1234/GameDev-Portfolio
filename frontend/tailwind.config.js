@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   darkMode: false,
   content: [
@@ -8,6 +9,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        title: ["var(--font-cinzel)", "serif"],
+        body: ["var(--font-rajdhani)", "sans-serif"],
+      },
+
       colors: {
         primary: "#f29e0d",
         secondary: "#ce770d",
