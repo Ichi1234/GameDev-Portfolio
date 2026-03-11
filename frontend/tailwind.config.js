@@ -18,7 +18,7 @@ module.exports = {
         primary: "#f29e0d",
         secondary: "#ce770d",
         cardbackground: "#272321",
-        textmaincolor: "#a6b98c",
+        textmaincolor: "#8f8a81",
         textdarkcolor: "#5d5246",
         background: "#110f0e",
         buttoncolor: "#f29e0d"
