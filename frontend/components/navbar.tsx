@@ -1,9 +1,11 @@
-export default function Navbar() {
+import { OwnerProfile } from "@/types/owner_profile";
+
+export default function Navbar({ profile }: { profile?: OwnerProfile }) {
   return (
     <nav>
       <div className="p-4 text-lg flex justify-around items-center tracking-widest">
-        <a href="#hero" className="font-title text-primary">
-          KASIDET UTHAIWIWATKUL
+        <a href="#hero" className="font-title text-primary uppercase">
+          { profile?.portfolio_title }
         </a>
 
         <div className="font-body text-sm space-x-8 text-textmaincolor font-semibold">
