@@ -4,7 +4,7 @@ export type OwnerProfile = {
     role_id: number,
     portfolio_title: string,
     main_quote: React.ReactNode,
-    sub_quote: string,
+    sub_quote: React.ReactNode,
     introduction: string,
     github_link: string
 }
