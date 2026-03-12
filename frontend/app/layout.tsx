@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Rajdhani, Cinzel } from "next/font/google";
 import "./globals.css";
 
-import { ProfileContext } from "@/context/profile_context";
-import { MockOwnerProfile } from "@/mock/owner_profile";
+import ProfileProvider from "@/context/profile_provider";
 
 import Navbar from "../components/navbar";
 import Footer from "@/components/footer";
@@ -40,11 +39,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className={`${cinzel.variable} ${rajdhani.variable} bg-background text-textmaincolor`}>
-        <ProfileContext.Provider value={MockOwnerProfile}>
+        <ProfileProvider>
           <Navbar />
           <main className="min-h-screen bg-background">{children}</main>
           <Footer />
-        </ProfileContext.Provider>
+        </ProfileProvider>
       </body>
     </html>
   );
