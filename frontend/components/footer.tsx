@@ -1,6 +1,10 @@
-import { OwnerProfile } from "@/types/owner_profile";
+"use client";
 
-export default function Footer({ profile }: { profile?: OwnerProfile }) {
+import { useProfile } from "@/context/profile_context";
+
+export default function Footer() {
+    const profile = useProfile();
+
     return (
         <footer>
             <hr className="text-[#1f1c19]"/>
