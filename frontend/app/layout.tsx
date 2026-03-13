@@ -6,6 +6,7 @@ import ProfileProvider from "@/context/profile_provider";
 
 import Navbar from "../components/navbar";
 import Footer from "@/components/footer";
+import GameDataProvider from "@/context/game_provider";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -41,7 +42,9 @@ export default function RootLayout({
       <body className={`${cinzel.variable} ${rajdhani.variable} bg-background text-textmaincolor`}>
         <ProfileProvider>
           <Navbar />
-          <main className="min-h-screen bg-background">{children}</main>
+          <GameDataProvider>
+            <main className="min-h-screen bg-background">{children}</main>
+          </GameDataProvider>
           <Footer />
         </ProfileProvider>
       </body>

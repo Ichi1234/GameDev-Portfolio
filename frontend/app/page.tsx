@@ -1,9 +1,12 @@
 "use client";
 
+import GameCard from "@/components/game_card";
+import { useGameData } from "@/context/game_context";
 import { useProfile } from "@/context/profile_context";
 
 export default function Home() {
   const profile = useProfile();
+  const games = useGameData();
 
   return (
     <>
@@ -37,7 +40,9 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl">My <span className="text-primary">Games</span></h2>
 
-        <div></div>
+        {games.map((game) => (
+          <GameCard key={game.id} game={game}/>
+        ))}
       </section>
 
       <section id="about" className="min-h-screen">
