@@ -1,6 +1,6 @@
 export type CoreSkills = {
     id: number,
     owner_id: number,
-    text: string,
+    name: string,
     description: string,
 }

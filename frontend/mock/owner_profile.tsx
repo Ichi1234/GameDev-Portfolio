@@ -29,56 +29,56 @@ export const MockOwnerProfile: OwnerProfile = {
     {
       id: 1,
       owner_id: 1,
-      text: "C#",
+      name: "C#",
       description: "Language"
     },
 
     {
       id: 2,
       owner_id: 1,
-      text: "Unity",
+      name: "Unity",
       description: "Engine"
     },
 
     {
       id: 3,
       owner_id: 1,
-      text: "OOP",
+      name: "OOP",
       description: "Paradigm"
     },
 
     {
       id: 4,
       owner_id: 1,
-      text: "State Machine",
+      name: "State Machine",
       description: "Pattern"
     },
 
     {
       id: 5,
       owner_id: 1,
-      text: "Git",
+      name: "Git",
       description: "Version Control"
     },
 
     {
       id: 6,
       owner_id: 1,
-      text: "Jira",
+      name: "Jira",
       description: "Management"
     },
 
     {
       id: 7,
       owner_id: 1,
-      text: "Figma",
+      name: "Figma",
       description: "Design"
     },
 
     {
       id: 8,
       owner_id: 1,
-      text: "Aseprite",
+      name: "Aseprite",
       description: "Pixel Art"
     },
   ]
