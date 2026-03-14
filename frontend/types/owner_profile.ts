@@ -1,10 +1,4 @@
-type CoreSkills = {
-    id: number,
-    owner_id: number,
-    skill: string,
-    description: string,
-}
-
+import { CoreSkills } from "./core_skill"
 
 export type OwnerProfile = {
     id: number,
