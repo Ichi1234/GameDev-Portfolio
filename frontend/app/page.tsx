@@ -56,7 +56,7 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-12">ABOUT <span className="text-primary">ME</span></h2>
 
-        <div className="grid grid-cols-2 gap-x-12 px-60">
+        <div className="grid md:grid-cols-2 gap-x-12 px-4 lg:px-60">
 
           {/* Left Grid Here */}
           <div className="flex flex-col">
@@ -73,7 +73,7 @@ export default function Home() {
           
           {/* Right Grid Here */}
           <div>
-            <h2 className="mb-4 text-xl text-primary font-title">Core Skills</h2>         
+            <h2 className="mt-8 md:mt-0 mb-4 text-xl text-primary font-title">Core Skills</h2>         
             <div className="grid grid-cols-2 gap-4">
               {profile.core_skills.map((skill) => (
                 <SkillChip key={skill.id} core_skill={skill} />
