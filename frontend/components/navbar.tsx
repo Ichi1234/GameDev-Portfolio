@@ -15,9 +15,9 @@ export default function Navbar() {
         </a>
 
         <div className="flex sm:block font-body text-[0.65rem] sm:text-xs lg:text-sm space-x-4 sm:space-x-8 text-textmaincolor">
-          <a href="#games">GAMES</a>
-          <a href="#about">ABOUT ME</a>
-          <a href="#contact">CONTACT</a>
+          <Link href="/#games">GAMES</Link>
+          <Link href="/#about">ABOUT ME</Link>
+          <Link href="/#contact">CONTACT</Link>
           <Link href="/signup" className="text-primary font-normal">SIGN UP</Link>
           <Link href="/job-contact" className="text-primary font-normal">JOB CONTACT</Link>
           <Link href="/admin" className="text-primary font-normal">ADMIN</Link>
