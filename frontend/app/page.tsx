@@ -88,7 +88,7 @@ export default function Home() {
         <div className="absolute left-1/2 top-0 -translate-x-1/2 mb-4 w-px h-20 bg-linear-to-t from-primary/30 to-transparent"></div>
         <p className="text-textsubcolor sm:text-xs xl:text-sm tracking-[0.35em]">GET IN TOUCH</p>
 
-        <h2 className="font-title font-bold text-4xl mb-4">Let's  <span className="text-primary">Collaborate</span></h2>
+        <h2 className="font-title font-bold text-4xl mb-4">Let&apos;s  <span className="text-primary">Collaborate</span></h2>
 
         <p className="max-w-2xl text-center mb-8">
           Interested in collaboration, internship opportunities, or discussing game systems and architecture? Feel free to reach out.
