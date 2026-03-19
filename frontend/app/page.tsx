@@ -84,7 +84,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="relative py-28 flex flex-col gap-y-4 items-center">
+      <section id="contact" className="relative py-28 flex flex-col gap-y-4 items-center text-center">
         <div className="absolute left-1/2 top-0 -translate-x-1/2 mb-4 w-px h-20 bg-linear-to-t from-primary/30 to-transparent"></div>
         <p className="text-textsubcolor sm:text-xs xl:text-sm tracking-[0.35em]">GET IN TOUCH</p>
 
@@ -94,8 +94,8 @@ export default function Home() {
           Interested in collaboration, internship opportunities, or discussing game systems and architecture? Feel free to reach out.
         </p>
 
-        <div className="flex gap-x-4 text-sm">
-          <a className="text-primary bg-[#272321] flex justify-evenly items-center gap-2 border border-primary/40 rounded-lg px-8 py-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <a className="text-primary bg-[#272321] flex justify-evenly items-center gap-2 border border-primary/40 rounded-lg px-8 py-3">
             
             {/* Mail Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
