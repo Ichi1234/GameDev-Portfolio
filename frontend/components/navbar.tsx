@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useProfile } from "@/context/profile_context";
 
 export default function Navbar() {
@@ -17,8 +18,9 @@ export default function Navbar() {
           <a href="#games">GAMES</a>
           <a href="#about">ABOUT ME</a>
           <a href="#contact">CONTACT</a>
-          <a href="signup" className="text-primary font-normal">SIGN UP</a>
-          <a href="admin" className="text-primary font-normal">ADMIN</a>
+          <Link href="/signup" className="text-primary font-normal">SIGN UP</Link>
+          <Link href="/job-contact" className="text-primary font-normal">JOB CONTACT</Link>
+          <Link href="/admin" className="text-primary font-normal">ADMIN</Link>
         </div>
       </div>
 
