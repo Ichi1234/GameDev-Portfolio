@@ -225,7 +225,7 @@ pip install -r requirements.txt
 ### Run backend:
 
 ```
-uvicorn main:app --reload  
+uvicorn backend.main:app --reload
 ```
 
 Backend runs at:  

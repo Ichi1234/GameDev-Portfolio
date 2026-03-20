@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from app.infrastructure.database import engine, Base
-from app.presentation.routers import role_router
+from backend.app.data.models.database import engine, Base
+from backend.app.application.routers import role_router
 
 app = FastAPI()
 
