@@ -8,6 +8,7 @@ import { useProfile } from "@/context/profile_context";
 export default function Home() {
   const profile = useProfile();
   const games = useGameData();
+  const main_email = process.env.NEXT_PUBLIC_MAIN_EMAIL;
 
   return (
     <>
@@ -95,7 +96,7 @@ export default function Home() {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <a className="text-primary bg-[#272321] flex justify-evenly items-center gap-2 border border-primary/40 rounded-lg px-8 py-3">
+          <a href={`mailto:${main_email}`} className="text-primary bg-[#272321] flex justify-evenly items-center gap-2 border border-primary/40 rounded-lg px-8 py-3">
             
             {/* Mail Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
@@ -115,7 +116,7 @@ export default function Home() {
             </svg>
           </a>
 
-          <a className="bg-[#272321] flex justify-evenly items-center gap-2 border border-[#2b2826] rounded-lg px-8 py-3">
+          <a href={profile.github_link} target="_blank" rel="noopener noreferrer" className="bg-[#272321] flex justify-evenly items-center gap-2 border border-[#2b2826] rounded-lg px-8 py-3">
             
             {/* Github Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
