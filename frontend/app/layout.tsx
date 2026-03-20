@@ -7,6 +7,7 @@ import ProfileProvider from "@/context/profile_provider";
 import Navbar from "../components/navbar";
 import Footer from "@/components/footer";
 import GameDataProvider from "@/context/game_provider";
+import { AuthProvider } from "@/context/auth_provider";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -40,13 +41,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className={`${cinzel.variable} ${rajdhani.variable} bg-background text-textmaincolor`}>
-        <ProfileProvider>
-          <Navbar />
-          <GameDataProvider>
-            <main className="pb-40 bg-background">{children}</main>
-          </GameDataProvider>
-          <Footer />
-        </ProfileProvider>
+        <AuthProvider>
+          <ProfileProvider>
+            <Navbar />
+            <GameDataProvider>
+              <main className="pb-40 bg-background">{children}</main>
+            </GameDataProvider>
+            <Footer />
+          </ProfileProvider>
+        </AuthProvider>
       </body>
     </html>
   );
