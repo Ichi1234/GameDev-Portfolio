@@ -43,7 +43,7 @@ export default function RootLayout({
         <ProfileProvider>
           <Navbar />
           <GameDataProvider>
-            <main className="pb-30 bg-background">{children}</main>
+            <main className="pb-40 bg-background">{children}</main>
           </GameDataProvider>
           <Footer />
         </ProfileProvider>
