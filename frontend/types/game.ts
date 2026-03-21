@@ -16,6 +16,7 @@ export type Game = {
   start_date: string
   release_date: string
   status: string
+  repository_link? : string
   
   tags: string[]
   platforms: string[]

@@ -14,6 +14,7 @@ export const MockGamesData: Game[] = [
     cover_img_path: "/img/raging.png",
     start_date: "2026-01-17",
     release_date: "",
+    repository_link: "https://github.com/Ichi1234/GameDev-Portfolio",
     status: "inprogress",
     type: "Experimental Game",
     tags: ["2D", "Action", "Single Player"],
