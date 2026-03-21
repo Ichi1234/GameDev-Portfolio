@@ -8,6 +8,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
 import Link from "next/link";
 import { formatDate } from "@/utils/format_date";
 import Chip from "@/components/chip";
+import { formatVersion } from "@/utils/format_version";
 
 export default function GameDetail() {
     const params = useParams();
@@ -144,6 +145,34 @@ export default function GameDetail() {
                             </div>
 
                         </div>
+                    </div>
+
+                    <h2 className="font-title text-2xl text-white"><span className="text-primary">Game</span> Showcase</h2>
+
+                    <div>
+                        {/* ADD MEDIA HERE */}
+                    </div>
+
+                    <h2 className="font-title text-2xl text-white"><span className="text-primary">Change</span> Log</h2>
+                    
+                    <div className="text-sm rounded-xl overflow-hidden max-w-3xl border border-[#332e2b]">
+
+                        {game.changelogs.map((log, index) => (
+                            <p
+                                key={log.version}
+                                className={
+                                    `
+                                    flex flex-wrap items-center gap-x-4 p-5
+                                    ${index % 2 === 0 ? "bg-cardbackground" : "bg-[#272321]"}
+                                    `
+                                }
+                            >
+                                <span className="w-8 text-primary font-semibold">{formatVersion(log.version.toString())}</span>
+                                <span className="w-16 text-textsubcolor text-xs">{formatDate(log.date, true)}</span>
+                                <span>{log.description}</span>
+                               
+                            </p>
+                        ))}
                     </div>
                     
                 </div>

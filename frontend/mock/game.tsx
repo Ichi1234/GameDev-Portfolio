@@ -26,9 +26,17 @@ export const MockGamesData: Game[] = [
       {
       id: 1,
       game_id: 1,
-      version: 0.9,
+      version: "0.9",
       description: "All the main feature is finished, Published the demo.",
       date: "2026-01-26"
+      },
+
+      {
+      id: 2,
+      game_id: 1,
+      version: "0.9.1",
+      description: "Boss can now shoot the projectile.",
+      date: "2026-03-21"
       },
     ]
   },
@@ -57,7 +65,7 @@ export const MockGamesData: Game[] = [
       {
       id: 2,
       game_id: 2,
-      version: 1,
+      version: "1.0",
       description: "All the main feature is finished, Published the game for the company.",
       date: "2026-02-17"
       },
