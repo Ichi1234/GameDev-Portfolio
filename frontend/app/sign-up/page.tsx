@@ -11,7 +11,7 @@ export default function SignUp() {
 
                 </div>
 
-                <h2 className="font-title font-bold text-2xl text-white">Register</h2>
+                <h2 className="font-title font-bold text-2xl mt-2 text-white">Register</h2>
 
                 <div className="self-start w-full">
                     <label className="block text-textsubcolor mb-1" htmlFor="name">Username</label>
