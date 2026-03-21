@@ -20,7 +20,7 @@ export default function Navbar() {
           <Link href="/#games">GAMES</Link>
           <Link href="/#about">ABOUT ME</Link>
           <Link href="/#contact">CONTACT</Link>
-          <Link href="/signup" className="text-primary font-normal">SIGN UP</Link>
+          <Link href="/sign-up" className="text-primary font-normal">SIGN UP</Link>
 
           {user?.role === "recruiter" && (
             <Link href="/job-contact" className="text-primary font-normal">
