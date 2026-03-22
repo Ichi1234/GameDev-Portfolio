@@ -1,7 +1,7 @@
 type GameChangelog = {
     id: number,
     game_id: number,
-    version: number,
+    version: string,
     description: string,
     date: string
 }
@@ -16,6 +16,7 @@ export type Game = {
   start_date: string
   release_date: string
   status: string
+  repository_link? : string
   
   tags: string[]
   platforms: string[]

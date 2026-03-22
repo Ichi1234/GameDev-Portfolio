@@ -4,10 +4,10 @@ export default function SignUp() {
     
     return (
         <main className="h-[70vh] flex justify-center items-center px-4">
-            <form className="w-full max-w-md flex flex-col items-center gap-y-6 mt-auto px-8 py-10 rounded-2xl bg-cardbackground border border-[#272321]">
+            <form className="w-full max-w-md flex flex-col items-center gap-y-6 mt-auto px-8 py-10 rounded-2xl bg-cardbackground border border-[#332e2b]">
                 <div className="flex justify-evenly w-full">
                     <button className="w-full text-xl font-title text-white px-6 py-2 border-b-2 border-primary/40">Visitor</button>
-                    <button className="w-full text-xl font-title text-textsubcolor px-6 py-2 border-b-2 border-[#272321]">HR</button>
+                    <button className="w-full text-xl font-title text-textsubcolor px-6 py-2 border-b-2 border-[#332e2b]">HR</button>
 
                 </div>
 

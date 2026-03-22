@@ -11,23 +11,32 @@ export const MockGamesData: Game[] = [
       This project focuses on designing a responsive combat system and experimenting with a unique rage mechanic driven by real-time microphone input.
     </>,
     download_path: "yes",
-    cover_img_path: "/img/raging.png",
+    cover_img_path: "/img/mockup/raging.png",
     start_date: "2026-01-17",
     release_date: "",
+    repository_link: "https://github.com/Ichi1234/GameDev-Portfolio",
     status: "inprogress",
     type: "Experimental Game",
     tags: ["2D", "Action", "Single Player"],
     platforms: ["PC"],
-    photos: ["AAA"],
-    videos: ["AAA"],
+    photos: ["/img/mockup/Screenshot_2.png", "/img/mockup/Screenshot_3.png", "/img/mockup/Screenshot_4.png", "/img/mockup/Screenshot_5.png"],
+    videos: ["/video/mockup/Raging_Cacophony_Demo.mp4"],
 
     changelogs: [
       {
       id: 1,
       game_id: 1,
-      version: 0.9,
+      version: "0.9",
       description: "All the main feature is finished, Published the demo.",
       date: "2026-01-26"
+      },
+
+      {
+      id: 2,
+      game_id: 1,
+      version: "0.9.1",
+      description: "Boss can now shoot the projectile.",
+      date: "2026-03-21"
       },
     ]
   },
@@ -49,14 +58,14 @@ export const MockGamesData: Game[] = [
     type: "Retro Game",
     tags: ["2D", "Retro", "Rogue-like", "Single Player"],
     platforms: ["PC"],
-    photos: ["AAA"],
-    videos: ["AAA"],
+    photos: [],
+    videos: [],
 
     changelogs: [
       {
       id: 2,
       game_id: 2,
-      version: 1,
+      version: "1.0",
       description: "All the main feature is finished, Published the game for the company.",
       date: "2026-02-17"
       },
