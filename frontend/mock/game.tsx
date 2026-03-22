@@ -11,7 +11,7 @@ export const MockGamesData: Game[] = [
       This project focuses on designing a responsive combat system and experimenting with a unique rage mechanic driven by real-time microphone input.
     </>,
     download_path: "yes",
-    cover_img_path: "/img/raging.png",
+    cover_img_path: "/img/mockup/raging.png",
     start_date: "2026-01-17",
     release_date: "",
     repository_link: "https://github.com/Ichi1234/GameDev-Portfolio",
@@ -19,8 +19,8 @@ export const MockGamesData: Game[] = [
     type: "Experimental Game",
     tags: ["2D", "Action", "Single Player"],
     platforms: ["PC"],
-    photos: ["AAA"],
-    videos: ["AAA"],
+    photos: ["/img/mockup/Screenshot_2.png", "/img/mockup/Screenshot_3.png", "/img/mockup/Screenshot_4.png", "/img/mockup/Screenshot_5.png"],
+    videos: ["/video/mockup/Raging_Cacophony_Demo.mp4"],
 
     changelogs: [
       {
@@ -58,8 +58,8 @@ export const MockGamesData: Game[] = [
     type: "Retro Game",
     tags: ["2D", "Retro", "Rogue-like", "Single Player"],
     platforms: ["PC"],
-    photos: ["AAA"],
-    videos: ["AAA"],
+    photos: [],
+    videos: [],
 
     changelogs: [
       {
