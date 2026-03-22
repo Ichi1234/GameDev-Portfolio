@@ -40,7 +40,7 @@ export default function GameDetail() {
             </div>
             
             {/* Main Description */}
-            <div className="flex flex-col gap-y-2 z-10 px-4 lg:px-60 mt-40">
+            <div className="flex flex-col gap-y-2 z-10 px-12 lg:px-60 mt-40">
 
                 <GameHeader game={game}/>
                 

@@ -29,7 +29,7 @@ export default function GameInfo({ game }: Props) {
       </div>
 
       {/* Platforms + Tags */}
-      <div className="flex gap-x-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="px-5 py-3 bg-cardbackground border border-[#332e2b] rounded-lg">
           <h2 className="text-textsubcolor font-title text-sm mb-2">Platforms</h2>
           <div className="flex gap-3">

@@ -46,13 +46,13 @@ export default function GameShowcase({ game }: Props) {
           </div>
 
           {/* THUMBNAILS */}
-          <div className="flex gap-4 mt-4 overflow-x-auto">
+          <div className="flex gap-2 sm:gap-4 mt-4 overflow-x-auto">
             {media.map((item, index) => (
               <div
                 key={index}
                 onClick={() => setSelectedIndex(index)}
                 className={`
-                  relative w-32 h-20 rounded-md overflow-hidden cursor-pointer border
+                  relative w-32 h-16 sm:h-20 rounded-md overflow-hidden cursor-pointer border
                   ${index === selectedIndex ? "border-primary" : "border-[#332e2b]"}
                 `}
               >
