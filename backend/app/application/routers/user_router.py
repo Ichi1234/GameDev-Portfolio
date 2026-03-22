@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.user_model import Role
-from backend.app.application.schemas.role_schema import RoleCreate
+from backend.app.application.schemas.user_schema import RoleCreate
 
-router = APIRouter(prefix="/roles", tags=["Roles"])
+role_router = APIRouter(prefix="/roles", tags=["Roles"])
 
-@router.post("/")
+@role_router.post("/")
 def create_role(role: RoleCreate, db: Session = Depends(get_db)):
     new_role = Role(name=role.name)
 
@@ -17,7 +17,7 @@ def create_role(role: RoleCreate, db: Session = Depends(get_db)):
     return new_role
 
 
-@router.get("/")
+@role_router.get("/")
 def get_roles(db: Session = Depends(get_db)):
     users = db.query(Role).all()
     return users
