@@ -1,14 +1,12 @@
 import os
 import shutil
-import json
 
 from pathlib import Path
 from typing import Optional, List
-from datetime import date
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
-from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GameFollow, GamePhoto, GameVideo
+from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GamePhoto, GameVideo
 from backend.app.data.models.tag_platform_model import Tag, Platform
 from backend.app.application.schemas.game_schema import GameCreate
 
