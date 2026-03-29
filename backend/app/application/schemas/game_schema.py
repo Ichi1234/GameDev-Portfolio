@@ -12,8 +12,8 @@ class ChangelogItem(BaseModel):
 class GameCreate(BaseModel):
     title: str
     description: str
-    download_path: Optional[str] = None
-    cover_img_path: Optional[str] = None
+    game_file: Optional[str] = None
+    cover_img: Optional[str] = None
     start_date: Optional[datetime.date] = None
     release_date: Optional[datetime.date] = None
     repository_link: Optional[str] = None

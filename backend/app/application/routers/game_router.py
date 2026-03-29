@@ -1,9 +1,19 @@
-from fastapi import APIRouter, Depends
+import os
+import shutil
+import json
+
+from pathlib import Path
+from typing import Optional, List
+from datetime import date
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GameFollow, GamePhoto, GameVideo
 from backend.app.data.models.tag_platform_model import Tag, Platform
 from backend.app.application.schemas.game_schema import GameCreate
+
+
+STORAGE_BASE = Path(__file__).resolve().parents[4] / "backend" / "storage" / "games"
 
 router = APIRouter(prefix="/games", tags=["Games"])
 
@@ -67,12 +77,19 @@ def get_game(db: Session = Depends(get_db)):
 
 
 @router.post("/")
-def create_game(body: GameCreate, db: Session = Depends(get_db)):
+def create_game(
+    body: GameCreate,
+    game_file: Optional[UploadFile] = File(None),
+    cover_img: Optional[UploadFile] = File(None),
+    photos: List[UploadFile] = File(default=[]),
+    videos: List[UploadFile] = File(default=[]),
+    db: Session = Depends(get_db),
+):
     game = Game(
         title=body.title,
         description=body.description,
-        download_path=body.download_path,
-        cover_img_path=body.cover_img_path,
+        download_path=None,
+        cover_img_path=None,
         type=body.type,
         start_date=body.start_date,
         release_date=body.release_date,
@@ -83,6 +100,28 @@ def create_game(body: GameCreate, db: Session = Depends(get_db)):
     db.add(game)
     db.commit()
     db.refresh(game)
+
+    safe_name = body.title.replace(" ", "_").lower()
+    target_dir = STORAGE_BASE / safe_name
+    os.makedirs(target_dir, exist_ok=True)
+
+    def _save_upload_file(upload: UploadFile) -> Optional[str]:
+        if not upload:
+            return None
+        dest = target_dir / upload.filename
+        try:
+            with open(dest, "wb") as out:
+                shutil.copyfileobj(upload.file, out)
+            return f"/storage/games/{safe_name}/{upload.filename}"
+        except Exception:
+            return None
+
+    if game_file:
+        saved_game = _save_upload_file(game_file)
+        if saved_game:
+            game.download_path = saved_game
+            db.commit()
+            db.refresh(game)
 
     for name in body.tags or []:
         tag = db.query(Tag).filter(Tag.name == name).first()
@@ -106,13 +145,22 @@ def create_game(body: GameCreate, db: Session = Depends(get_db)):
         gp = GamePlatform(game_id=game.id, platform_id=plat.id)
         db.add(gp)
 
-    for p in body.photos or []:
-        photo = GamePhoto(game_id=game.id, file_path=p)
-        db.add(photo)
+    if cover_img:
+        saved_cover = _save_upload_file(cover_img)
+        if saved_cover:
+            game.cover_img_path = saved_cover
+            db.commit()
+            db.refresh(game)
 
-    for v in body.videos or []:
-        video = GameVideo(game_id=game.id, file_path=v)
-        db.add(video)
+    for file in photos or []:
+        saved = _save_upload_file(file)
+        if saved:
+            db.add(GamePhoto(game_id=game.id, file_path=saved))
+
+    for file in videos or []:
+        saved = _save_upload_file(file)
+        if saved:
+            db.add(GameVideo(game_id=game.id, file_path=saved))
 
     for c in body.changelogs or []:
         changelog = GameChangelog(
