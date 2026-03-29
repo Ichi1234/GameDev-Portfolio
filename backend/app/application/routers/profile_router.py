@@ -64,6 +64,6 @@ def get_profile(db: Session = Depends(get_db)):
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
         "github_link": profile.github_link,
-        "core_skills": [s.skill for s in skills],
+        "core_skills": [{s.skill, s.description} for s in skills],
         "current_focus": [f.focus for f in focuses],
     }
