@@ -1,33 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import HeroForm from "@/components/admin_form/hero_form";
+import MainForm from "@/components/admin_form/main_form";
 import GameForm from "@/components/admin_form/game_form";
-import AboutForm from "@/components/admin_form/about_form";
-import DataForm from "@/components/admin_form/data_form";
+import SkillForm from "@/components/admin_form/skill_form";
+import FocusForm from "@/components/admin_form/focus_form";
+import TagPlatForm from "@/components/admin_form/tag_plat_form";
 
 
 
 export default function AdminPage() {
-    const [activeTab, setActiveTab] = useState("hero");
+    const [activeTab, setActiveTab] = useState("main");
 
     const tabs = [
-        { key: "hero", label: "Hero" },
+        { key: "main", label: "Main" },
         { key: "game", label: "Game" },
-        { key: "about", label: "About Me" },
-        { key: "data", label: "Data Management" },
+        { key: "skill", label: "Skill" },
+        { key: "focus", label: "Focus" },
+        { key:"tag-platform", label: "Tag & Platform" }
     ];
 
     const renderForm = () => {
         switch (activeTab) {
-            case "hero":
-                return <HeroForm />;
+            case "main":
+                return <MainForm />;
             case "game":
                 return <GameForm />;
-            case "about":
-                return <AboutForm />;
-            case "data":
-                return <DataForm />;
+            case "skill":
+                return <SkillForm />;
+            case "focus":
+                return <FocusForm />;
+            case "tag-platform":
+                return <TagPlatForm/>;
             default:
                 return null;
         }
