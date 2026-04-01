@@ -21,7 +21,9 @@ module.exports = {
         textmaincolor: "#cec5b5",
         textsubcolor: "#847869",
         background: "#110f0e",
-        buttoncolor: "#f29e0d"
+        buttoncolor: "#f29e0d",
+        admintext: "#c9184a",
+        adminbackground: "#fcd5ce"
       },
     },
   },

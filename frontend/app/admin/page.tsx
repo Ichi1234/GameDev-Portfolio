@@ -3,7 +3,7 @@
 export default function JobContact() {
     
     return (
-        <main className="h-screen px-8 bg-pink-300">
+        <main className="h-screen px-8 bg-adminbackground">
             <form className="flex flex-col gap-3">
                 <label htmlFor="topic" className="font-title text-2xl text-white">Topic</label>
                 <input name="topic" placeholder="Collaboration Opportunity on Exciting Game Project" className="focus:outline-none focus:ring-0 p-2 border-b border-primary/40 focus:border-primary" />
