@@ -39,7 +39,7 @@ export default function AdminPage() {
 
     return (
         <main className="min-h-[75vh] px-8 py-4 bg-adminbackground text-admintext flex flex-col  justify-center  items-center">
-            <h1 className="font-title text-2xl text-admintitle font-bold my-8">Admin Page UwU</h1>
+            <h1 className="font-title text-2xl text-admintitle font-bold mt-28 mb-8">Admin Page UwU</h1>
             <div className="w-full max-w-3xl bg-white/80 rounded-3xl shadow-xl p-10">
 
                 {/* Navbar */}

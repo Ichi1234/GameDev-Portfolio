@@ -30,5 +30,5 @@ label {
 
 .dropdown-input {
   @apply w-full bg-transparent border-2 border-[#c9184a94] font-body
-         p-4 rounded-lg mt-2 transition cursor-pointer;
+         p-2 rounded-lg mt-2 transition cursor-pointer;
 }

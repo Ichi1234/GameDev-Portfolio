@@ -18,7 +18,7 @@ export default function SkillForm() {
             </div>
 
             <button className="btn-primary">
-                SAVE
+                ADD
             </button>
         </form>
     );

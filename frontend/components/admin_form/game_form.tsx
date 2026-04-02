@@ -1,4 +1,57 @@
+"use client";
+import { useState } from "react";
+
 export default function GameForm() {
+    const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
+    const [tagDropdownData, setTagDropdownData] = useState(
+        [
+            "Test 1",
+            "Test 2",
+            "Test 3"
+        ]
+    );
+
+    // Change Log Const
+    const [changelogLst, setChangelogLst] = useState([
+        {
+            "version": "1.0.0",
+            "date": "JAN 26, 2026",
+            "description": "All the main feature is finished, Published the demo."
+        },
+
+        {
+            "version": "1.0.1",
+            "date": "JAN 26, 2026",
+            "description": "All EEEEEE."
+        }
+    ])
+
+    const [version, setVersion] = useState("");
+    const [date, setDate] = useState("");
+    const [description, setDescription] = useState("");
+
+    const addChangelog = () => {
+        if (!version || !date || !description) return;
+
+        const newLog = {
+            version,
+            date,
+            description
+        };
+
+        setChangelogLst([...changelogLst, newLog]);
+
+        setVersion("");
+        setDate("");
+        setDescription("");
+    };
+
+     const removeLog = (indexToRemove : number) => {
+        setChangelogLst(
+            changelogLst.filter((_, index) => index !== indexToRemove)
+        );
+    };
+    
     return (
         <form className="flex flex-col gap-6 font-title">
             <div>
@@ -43,7 +96,27 @@ export default function GameForm() {
 
             <div>
                 <label className="text-admintitle">Game Tags</label>
-                <div className="dropdown-input flex">
+                <div className="dropdown-input flex items-center" onClick={() => setTagDropdownOpen(!tagDropdownOpen)}>
+                    <div id="tag-container">
+                        <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
+                            <span>Test</span>
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                className="cursor-pointer hover:opacity-80 " 
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </div>
+                    </div>
+                    
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"
@@ -52,14 +125,21 @@ export default function GameForm() {
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
+                        className={`ml-auto transition ${tagDropdownOpen ? "rotate-180" : ""}`}
                     >
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
 
-                    <div className="hidden">
-
-                    </div>
+                   
                 </div>
+
+                {tagDropdownOpen && (
+                    <div className="bg-white rounded-xl shadow-lg mt-2 p-3 flex flex-col gap-2">
+                        <p className="hover:bg-gray-100 p-1 cursor-pointer">tag 1</p>
+                        <p className="hover:bg-gray-100 p-1 cursor-pointer">tag 2</p>
+                        <p className="hover:bg-gray-100 p-1 cursor-pointer">tag 3</p>
+                    </div>
+                )}
             </div>
 
             <div>
@@ -71,7 +151,7 @@ export default function GameForm() {
             </div>
 
             <div className="flex justify-between">
-                <div>
+                <div className="w-[48%]">
                     <label className="text-admintitle">Start Date</label>
                     <input
                         className="input-style"
@@ -79,7 +159,7 @@ export default function GameForm() {
                     />
                 </div>
 
-                <div>
+                <div className="w-[48%]">
                     <label className="text-admintitle">Release Date  (Optional)</label>
                     <input
                         className="input-style"
@@ -127,33 +207,89 @@ export default function GameForm() {
 
             <p className="text-admintitle font-bold mt-6">Change Logs</p>
             <div className="flex gap-x-2 text-sm! ">
-                <div>
-                    <label className="text-admintitle font-normal!">Version</label>
+
+                <div className="flex gap-4 w-full">
                     <input
-                        placeholder="Enter update version..."
+                    value={version}
+                    onChange={(e) => setVersion(e.target.value)}
+                    placeholder="Version"
+                    className="input-style"
+                    />
+
+                    <input
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        placeholder="Date"
+                        className="input-style"
+                    />
+
+                    <input
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Description"
                         className="input-style"
                     />
                 </div>
 
-                <div>
-                    <label className="text-admintitle font-normal!">Date</label>
-                    <input
-                        placeholder="Enter update date..."
-                        className="input-style"
-                    />
-                </div>
+                {/* + button */}
+                <button
+                    type="button"
+                    onClick={addChangelog}
+                    className="flex items-center justify-center w-10 h-10 rounded-lg bg-admintitle text-white hover:opacity-80 transition"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                    >
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                </button>
+            </div>
 
-                <div>
-                    <label className="text-admintitle font-normal!">Description</label>
-                    <input
-                        placeholder="Enter update descriptionD..."
-                        className="input-style"
-                    />
-                </div>
+           <div id="changelog-container" className="flex flex-col overflow-hidden rounded-lg">
+
+                {changelogLst.map((log, index) => {
+                    const isEven = index % 2 === 0;
+
+                    return (
+                        <div
+                            key={index}
+                            className={`text-white p-2 grid grid-cols-[80px_160px_1fr_40px] items-center ${
+                                isEven ? "bg-admintitle" : "bg-admintitle/40"
+                            }`}
+                        >
+                            <span>{log.version}</span>
+                            <span>{log.date}</span>
+                            <span className="text-sm">{log.description}</span>
+
+                            <svg
+                                onClick={() => removeLog(index)}
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                className="cursor-pointer hover:opacity-80"
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </div>
+                    );
+                })}
+
             </div>
 
             <button className="btn-primary">
-                SAVE
+                ADD
             </button>
         
         </form>

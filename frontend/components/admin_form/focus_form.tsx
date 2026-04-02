@@ -10,7 +10,7 @@ export default function FocusForm() {
             </div>
 
             <button className="btn-primary">
-                SAVE
+                ADD
             </button>
         </form>
     );
