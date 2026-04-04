@@ -25,7 +25,8 @@ export default function GameInfo({ game }: Props) {
       {/* Description */}
       <div className="p-7 bg-cardbackground border border-[#332e2b] max-w-2xl rounded-xl">
         <h2 className="text-white font-title text-xl mb-4">Description</h2>
-        <p>{game.description}</p>
+        <p dangerouslySetInnerHTML={{ __html: game.description }}
+/>
       </div>
 
       {/* Platforms + Tags */}

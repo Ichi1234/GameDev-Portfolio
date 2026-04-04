@@ -40,7 +40,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
               <p className="text-xs 2xl:text-sm text-textsubcolor"> { game.release_date != "" ? formatDate(game.release_date) : "In Progress" } </p>
             </div>
 
-            <p className="mt-2 line-clamp-4 text-xs lg:text-sm min-h-20">{ game.description }</p>
+            <p dangerouslySetInnerHTML={{ __html: game.description }} className="mt-2 line-clamp-4 text-xs lg:text-sm min-h-20"/>
 
             <div className="flex gap-x-2 mt-4">
               {game.tags.map((tag) => (

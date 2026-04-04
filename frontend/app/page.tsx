@@ -22,13 +22,9 @@ export default function Home() {
           Indie Game Developer
         </p>
 
-        <h1 className="uppercase font-title font-bold text-lg sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20">
-          {profile.main_quote}
-        </h1>
+        <h1 dangerouslySetInnerHTML={{ __html: profile.main_quote }} className="uppercase font-title font-bold text-lg sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20"/>
 
-        <p className="font-body text-[0.55rem] sm:text-xs xl:text-lg text-textmaincolor mt-4">
-          {profile.sub_quote}
-        </p>
+        <p dangerouslySetInnerHTML={{ __html: profile.sub_quote }} className="font-body text-[0.55rem] sm:text-xs xl:text-lg text-textmaincolor mt-4"/>
 
         <a href="#games" className="text-primary mt-8 uppercase text-[0.6rem] sm:text-xs xl:text-lg ">
           VIEW MY WORK
@@ -62,7 +58,7 @@ export default function Home() {
           {/* Left Grid Here */}
           <div className="flex flex-col">
             <h2 className="mb-4 text-xl text-primary font-title">Introduction</h2>
-            <p className="">{profile.introduction}</p>
+            <p dangerouslySetInnerHTML={{ __html: profile.introduction }}/>
 
             <h2 className="mt-8 mb-4 text-xl text-primary font-title">Current Focus</h2>
             <ul className="ml-4">
