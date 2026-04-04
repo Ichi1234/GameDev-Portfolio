@@ -9,7 +9,7 @@ type GameChangelog = {
 export type Game = {
   id: number
   title: string
-  description: React.ReactNode
+  description: string
   download_path: string
   cover_img_path: string
   type: string
