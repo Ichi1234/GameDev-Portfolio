@@ -8,7 +8,24 @@ export const MockOwnerProfile: OwnerProfile = {
 
   introduction: "I am an independent game developer and software engineering student specializing in gameplay systems and backend architecture.<br/><br/>I focus on building challenging experiences driven by mechanics, systems, and immersive world design.",
   github_link: "https://github.com/Ichi1234",
-  current_focus: ["Improving C# knowledge", "Improving Unity knowledge", "Improving code quality Readability & Scalability"],
+  current_focus: [
+    {
+      id: 1,
+      name: "Improving C# knowledge"
+    },
+
+    {
+      id: 2,
+      name: "Improving Unity knowledge"
+    },
+
+    {
+      id: 3,
+      name: "Improving code quality Readability & Scalability"
+    },
+  
+  ],
+
   core_skills: [
     {
       id: 1,

@@ -1,4 +1,5 @@
 import { CoreSkills } from "./core_skill"
+import { Focuses } from "./focus"
 
 export type OwnerProfile = {
     id: number,
@@ -7,6 +8,6 @@ export type OwnerProfile = {
     sub_quote: string,
     introduction: string,
     github_link: string,
-    current_focus: string[],
+    current_focus: Focuses[],
     core_skills: CoreSkills[]
 }

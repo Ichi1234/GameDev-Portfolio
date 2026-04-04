@@ -63,7 +63,7 @@ export default function Home() {
             <h2 className="mt-8 mb-4 text-xl text-primary font-title">Current Focus</h2>
             <ul className="ml-4">
               {profile.current_focus.map((focus) => (
-                <li className="list-disc marker:text-primary" key={focus}>{focus}</li>
+                <li className="list-disc marker:text-primary" key={focus.id}>{focus.name}</li>
               ))}
             </ul>
           </div>
