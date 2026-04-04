@@ -23,7 +23,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
               fill
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-cardbackground via-cardbackground/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-linear-to-t from-cardbackground via-cardbackground/40 to-transparent"></div>
 
             {/* Yes, this is top left yellow thing */}
             <div className="absolute top-3 left-3 px-2 sm:px-3 py-1 text-[0.55rem] sm:text-[0.65rem] lg:text-xs
