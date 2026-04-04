@@ -1,26 +1,19 @@
 "use client";
 import { useState } from "react";
 import GameAddForm from "./game/add_form";
+import GameHomeForm from "./game/home_form";
+import GameEditForm from "./game/edit_form";
+import { Game } from "@/types/game";
 
 export default function GameForm() {
-    const [mainForm, setMainForm] = useState(true);
-    const [editForm, setEditForm] = useState(false);
-    const [addForm, setAddForm] = useState(false);
-
-    
+    const [screen, setScreen] = useState("home");
+    const [selectedGame, setSelectedGame] = useState<Game | null>(null);
     
     return (
         <>
-            {mainForm && (
-                <form className="flex flex-col gap-6 font-title">test
-                
-                </form>
-
-            )}
-
-            {addForm && (
-                <GameAddForm/>
-            )}
+            {screen === "home" && <GameHomeForm setScreen={setScreen} setSelectedGame={setSelectedGame} />}
+            {screen === "add" && <GameAddForm setScreen={setScreen} />}
+            {screen === "edit" && <GameEditForm setScreen={setScreen} />}
         </>
     );
 }

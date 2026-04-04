@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function GameAddForm() {
+type Props = {
+    setScreen: (screen: string) => void;
+};
+
+export default function GameAddForm({ setScreen }: Props) {
     const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
     const [tagDropdownData] = useState(
         [
@@ -100,6 +104,7 @@ export default function GameAddForm() {
                         <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
                             <span>Test</span>
 
+                            {/* X mark */}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="14"
@@ -116,6 +121,7 @@ export default function GameAddForm() {
                         </div>
                     </div>
                     
+                    {/* Dropdown Arrow */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"
