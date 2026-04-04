@@ -13,7 +13,9 @@ export default function GameForm() {
         <>
             {screen === "home" && <GameHomeForm setScreen={setScreen} setSelectedGame={setSelectedGame} />}
             {screen === "add" && <GameAddForm setScreen={setScreen} />}
-            {screen === "edit" && <GameEditForm setScreen={setScreen} />}
+            {screen === "edit" && selectedGame && (
+                <GameEditForm setScreen={setScreen} gameData={selectedGame} />
+            )}
         </>
     );
 }
