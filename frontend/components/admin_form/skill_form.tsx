@@ -21,9 +21,9 @@ export default function SkillForm() {
 
     }
 
-    const handleRemove = (indexToRemove : number) => {
-        setSkillData(
-            skillData.filter((_, index) => index !== indexToRemove)
+    const handleRemove = (skillID : number) => {
+        setSkillData(prev =>
+            prev.filter(skill => skill.id !== skillID)
         );
     }
 
@@ -56,12 +56,12 @@ export default function SkillForm() {
             <h2 className="font-title font-bold text-admintitle text-xl">Skill List</h2>
 
             <div>
-                {skillData.map((skill, index) => {
+                {skillData.map((skill) => {
                     return (
                         <ListItem
                             key={skill.id}
                             title={skill.name}
-                            onRemove={() => handleRemove(index)}
+                            onRemove={() => handleRemove(skill.id)}
                         />
                     );
                 })}
