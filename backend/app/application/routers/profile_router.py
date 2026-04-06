@@ -21,34 +21,14 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(profile)
 
-    created_skills = []
-    if body.core_skills:
-        for s in body.core_skills:
-            skill = OwnerSkill(skill=s.get("name") if isinstance(s, dict) else s, description=(s.get("description") if isinstance(s, dict) else ""))
-            db.add(skill)
-            db.flush()
-            created_skills.append({"id": skill.id, "name": skill.skill, "description": skill.description})
-
-    created_focuses = []
-    if body.current_focus:
-        for f in body.current_focus:
-            focus_value = f.get("name") if isinstance(f, dict) else f
-            focus = OwnerFocus(focus=focus_value)
-            db.add(focus)
-            db.flush()
-            created_focuses.append({"id": focus.id, "name": focus.focus})
-
-    if created_skills or created_focuses:
-        db.commit()
-
     return {
         "portfolio_title": profile.portfolio_title,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
         "github_link": profile.github_link,
-        "core_skills": created_skills,
-        "current_focus": created_focuses,
+        "core_skills": [],
+        "current_focus": [],
     }
 
 
