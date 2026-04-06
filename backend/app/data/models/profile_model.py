@@ -4,7 +4,8 @@ from backend.app.data.database import Base
 
 class OwnerProfile(Base):
     __tablename__ = "profiles"
-
+    
+    id = Column(Integer, primary_key=True, index=True)
     portfolio_title = Column(String)
     main_quote = Column(String)
     sub_quote = Column(String)
