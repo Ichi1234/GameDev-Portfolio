@@ -24,16 +24,19 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
     created_skills = []
     if body.core_skills:
         for s in body.core_skills:
-            skill = OwnerSkill(skill=s)
+            skill = OwnerSkill(skill=s.get("name") if isinstance(s, dict) else s, description=(s.get("description") if isinstance(s, dict) else ""))
             db.add(skill)
-            created_skills.append(s)
+            db.flush()
+            created_skills.append({"id": skill.id, "name": skill.skill, "description": skill.description})
 
     created_focuses = []
     if body.current_focus:
         for f in body.current_focus:
-            focus = OwnerFocus(focus=f)
+            focus_value = f.get("name") if isinstance(f, dict) else f
+            focus = OwnerFocus(focus=focus_value)
             db.add(focus)
-            created_focuses.append(focus)
+            db.flush()
+            created_focuses.append({"id": focus.id, "name": focus.focus})
 
     if created_skills or created_focuses:
         db.commit()
@@ -64,6 +67,6 @@ def get_profile(db: Session = Depends(get_db)):
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
         "github_link": profile.github_link,
-        "core_skills": [{s.skill, s.description} for s in skills],
-        "current_focus": [f.focus for f in focuses],
+        "core_skills": [{"id": s.id, "name": s.skill, "description": s.description} for s in skills],
+        "current_focus": [{"id": f.id, "name": f.focus} for f in focuses],
     }
