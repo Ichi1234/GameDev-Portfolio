@@ -46,9 +46,8 @@ export default function ProfileProvider({ children }: Props) {
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch profile");
-        return res.json();
+        return res.json() as Promise<ProfileResponse>;
       })
-      .then((res) => res.json() as Promise<ProfileResponse>)
       .then((data) => {
         if (!mounted) return;
 
