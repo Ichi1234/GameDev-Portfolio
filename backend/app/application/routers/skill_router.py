@@ -8,7 +8,7 @@ router = APIRouter(prefix="/skill", tags=["Skill"])
 
 
 @router.post("/")
-def create_focus(body: SkillCreate, db: Session = Depends(get_db)):
+def create_skill(body: SkillCreate, db: Session = Depends(get_db)):
     skill = OwnerSkill(
         skill = body.name,
         description = body.description
@@ -26,7 +26,7 @@ def create_focus(body: SkillCreate, db: Session = Depends(get_db)):
 
 
 @router.delete("/")
-def delete_focus(remove_id: int, db: Session = Depends(get_db)):
+def delete_skill(remove_id: int, db: Session = Depends(get_db)):
     skill = db.query(OwnerSkill).filter(OwnerSkill.id == remove_id).first()
 
     if not skill:
