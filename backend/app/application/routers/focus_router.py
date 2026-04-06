@@ -10,7 +10,7 @@ router = APIRouter(prefix="/focus", tags=["Focus"])
 @router.post("/")
 def create_focus(body: FocusCreate, db: Session = Depends(get_db)):
     focus = OwnerFocus(
-        name = body.name
+        focus = body.name
     )
 
     db.add(focus)
@@ -18,7 +18,7 @@ def create_focus(body: FocusCreate, db: Session = Depends(get_db)):
     db.refresh(focus)
 
     return {
-        "focus": focus.id,
+        "id": focus.id,
         "name" : focus.focus
     }
 
