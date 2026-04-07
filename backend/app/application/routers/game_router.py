@@ -174,3 +174,162 @@ def create_game(
     return {"id": game.id}
 
 
+
+@router.put("/{game_id}")
+def update_game(
+    body: GameCreate,
+    game_id: int,
+    game_file: Optional[UploadFile] = File(None),
+    cover_img: Optional[UploadFile] = File(None),
+    photos: List[UploadFile] = File(default=[]),
+    videos: List[UploadFile] = File(default=[]),
+    db: Session = Depends(get_db),
+):
+    game = db.query(Game).filter(Game.id == game_id).first()
+    if not game:
+        return {"error": "Game not found"}
+
+    old_title = game.title or ""
+
+    game.title = body.title
+    game.description = body.description
+    game.type = body.type
+    game.start_date = body.start_date
+    game.release_date = body.release_date
+    game.repository_link = body.repository_link
+    game.status = body.status
+
+    new_title = body.title or ""
+    old_safe = old_title.replace(" ", "_").lower() if old_title else None
+    new_safe = new_title.replace(" ", "_").lower()
+
+    def _replace_storage_path(path: Optional[str], old: str, new: str) -> Optional[str]:
+        if not path:
+            return None
+        return path.replace(f"/storage/games/{old}/", f"/storage/games/{new}/")
+
+    if old_title and old_title != new_title:
+        game.download_path = _replace_storage_path(game.download_path, old_safe, new_safe)
+        game.cover_img_path = _replace_storage_path(game.cover_img_path, old_safe, new_safe)
+
+        photos = db.query(GamePhoto).filter(GamePhoto.game_id == game.id).all()
+        for p in photos:
+            p.file_path = _replace_storage_path(p.file_path, old_safe, new_safe)
+
+        videos = db.query(GameVideo).filter(GameVideo.game_id == game.id).all()
+        for v in videos:
+            v.file_path = _replace_storage_path(v.file_path, old_safe, new_safe)
+
+        db.commit()
+        db.refresh(game)
+
+        old_dir = STORAGE_BASE / old_safe
+        new_dir = STORAGE_BASE / new_safe
+        try:
+            if old_dir.exists():
+                os.makedirs(new_dir.parent, exist_ok=True)
+                try:
+                    shutil.move(str(old_dir), str(new_dir))
+                except Exception:
+                    # fallback: move contents into new_dir
+                    os.makedirs(new_dir, exist_ok=True)
+                    for item in old_dir.iterdir():
+                        shutil.move(str(item), str(new_dir))
+                    try:
+                        old_dir.rmdir()
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+    safe_name = new_safe
+    target_dir = STORAGE_BASE / safe_name
+    os.makedirs(target_dir, exist_ok=True)
+
+    def _save_upload_file(upload: UploadFile) -> Optional[str]:
+        if not upload:
+            return None
+        dest = target_dir / upload.filename
+        try:
+            with open(dest, "wb") as out:
+                shutil.copyfileobj(upload.file, out)
+            return f"/storage/games/{safe_name}/{upload.filename}"
+        except Exception:
+            return None
+
+    if game_file:
+        if game.download_path:
+            try:
+                rel = game.download_path.replace("/storage/games/", "")
+                old_path = STORAGE_BASE / rel
+                if old_path.exists():
+                    old_path.unlink()
+            except Exception:
+                pass
+
+        saved_game = _save_upload_file(game_file)
+        if saved_game:
+            game.download_path = saved_game
+            db.commit()
+            db.refresh(game)
+
+    for name in body.tags or []:
+        tag = db.query(Tag).filter(Tag.name == name).first()
+        if not tag:
+            tag = Tag(name=name)
+            db.add(tag)
+            db.commit()
+            db.refresh(tag)
+
+        gt = GameTag(game_id=game.id, tag_id=tag.id)
+        db.add(gt)
+
+    for name in body.platforms or []:
+        plat = db.query(Platform).filter(Platform.name == name).first()
+        if not plat:
+            plat = Platform(name=name)
+            db.add(plat)
+            db.commit()
+            db.refresh(plat)
+
+        gp = GamePlatform(game_id=game.id, platform_id=plat.id)
+        db.add(gp)
+
+    if cover_img:
+        if game.cover_img_path:
+            try:
+                rel = game.cover_img_path.replace("/storage/games/", "")
+                old_cover = STORAGE_BASE / rel
+                if old_cover.exists():
+                    old_cover.unlink()
+            except Exception:
+                pass
+
+        saved_cover = _save_upload_file(cover_img)
+        if saved_cover:
+            game.cover_img_path = saved_cover
+            db.commit()
+            db.refresh(game)
+
+    for file in photos or []:
+        saved = _save_upload_file(file)
+        if saved:
+            db.add(GamePhoto(game_id=game.id, file_path=saved))
+
+    for file in videos or []:
+        saved = _save_upload_file(file)
+        if saved:
+            db.add(GameVideo(game_id=game.id, file_path=saved))
+
+    for c in body.changelogs or []:
+        changelog = GameChangelog(
+            game_id=game.id,
+            version=c.version,
+            description=c.description,
+            date=c.date,
+        )
+        db.add(changelog)
+
+    db.commit()
+
+    return {"id": game.id}
