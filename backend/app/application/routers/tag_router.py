@@ -39,3 +39,15 @@ def delete_tag(remove_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return response
+
+
+@router.get("/")
+def get_focus(db: Session = Depends(get_db)):
+    tags = db.query(Tag).all()
+
+    if not tags:
+        return []
+
+    response = [{"id": t.id, "name": t.name} for t in tags]
+
+    return response

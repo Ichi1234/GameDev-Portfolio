@@ -39,3 +39,15 @@ def delete_focus(remove_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return response
+
+
+@router.get("/")
+def get_focus(db: Session = Depends(get_db)):
+    focuses = db.query(OwnerFocus).all()
+
+    if not focuses:
+        return []
+
+    response = [{"id": f.id, "name": f.focus} for f in focuses]
+
+    return response

@@ -39,3 +39,15 @@ def delete_tag(remove_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return response
+
+
+@router.get("/")
+def get_focus(db: Session = Depends(get_db)):
+    platforms = db.query(Platform).all()
+
+    if not platforms:
+        return []
+
+    response = [{"id": p.id, "name": p.name} for p in platforms]
+
+    return response

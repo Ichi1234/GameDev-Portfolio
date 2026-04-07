@@ -41,3 +41,15 @@ def delete_skill(remove_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return response
+
+
+@router.get("/")
+def get_skill(db: Session = Depends(get_db)):
+    skills = db.query(OwnerSkill).all()
+
+    if not skills:
+        return []
+
+    response = [{"id": s.id, "name": s.skill, "description": s.description} for s in skills]
+
+    return response
