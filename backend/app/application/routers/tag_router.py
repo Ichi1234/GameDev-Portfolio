@@ -23,7 +23,7 @@ def create_tag(body: GameTagCreate, db: Session = Depends(get_db)):
     }
 
 
-@router.delete("/")
+@router.delete("/{remove_id}")
 def delete_tag(remove_id: int, db: Session = Depends(get_db)):
     tag = db.query(Tag).filter(Tag.id == remove_id).first()
 

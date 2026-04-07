@@ -63,7 +63,7 @@ export default function TagPlatForm() {
 
     const handleRemove = (componentType : string, componentID : number) => {
         if (componentType === "tag") {
-            fetch(`${API_BASE}/tag/?remove_id=${componentID}`, { method: "DELETE" })
+            fetch(`${API_BASE}/tag/${componentID}`, { method: "DELETE" })
                 .then((res) => res.json())
                 .then(() => setTagData((prev) => prev.filter((t) => t.id !== componentID)))
                 .catch(() => setTagData((prev) => prev.filter((t) => t.id !== componentID)));
@@ -72,7 +72,7 @@ export default function TagPlatForm() {
         }
 
         if (componentType === "platform") {
-            fetch(`${API_BASE}/platform/?remove_id=${componentID}`, { method: "DELETE" })
+            fetch(`${API_BASE}/platform/${componentID}`, { method: "DELETE" })
                 .then((res) => res.json())
                 .then(() => setPlatformData((prev) => prev.filter((p) => p.id !== componentID)))
                 .catch(() => setPlatformData((prev) => prev.filter((p) => p.id !== componentID)));

@@ -32,7 +32,7 @@ export default function FocusForm() {
     }
 
     const handleRemove = (tagID : number) => {
-        fetch(`${API_BASE}/focus/?remove_id=${tagID}`, { method: "DELETE" })
+        fetch(`${API_BASE}/focus/${tagID}`, { method: "DELETE" })
             .then((res) => res.json())
             .then(() => {
                 setFocusData((prev) => prev.filter((tag) => tag.id !== tagID));
