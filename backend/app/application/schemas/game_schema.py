@@ -24,3 +24,10 @@ class GameCreate(BaseModel):
     photos: List[str] = []
     videos: List[str] = []
     changelogs: List[ChangelogItem] = []
+
+
+class GameTagCreate(BaseModel):
+    name : str
+
+class GamePlatformCreate(BaseModel):
+    name : str

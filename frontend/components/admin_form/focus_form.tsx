@@ -1,10 +1,11 @@
-import { MockOwnerProfile } from "@/mock/owner_profile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListItem from "../ListItem";
 
 export default function FocusForm() {
     
-    const [focusData, setFocusData] = useState(MockOwnerProfile.current_focus);
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+    const [focusData, setFocusData] = useState<{ id: number; name: string }[]>([]);
     const [name, setName] = useState("");
     
     
@@ -12,22 +13,46 @@ export default function FocusForm() {
         const trimmed = name.trim();
         if (!trimmed) return;
 
-        const nextId = focusData && focusData.length > 0 ? focusData[focusData.length - 1].id + 1 : 1;
-
-        const newFocus = {
-            id: nextId,
-            name: trimmed,
-        };
-
-        setFocusData([...focusData, newFocus]);
-        setName("");
+        fetch(`${API_BASE}/focus/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: trimmed }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setFocusData((prev) => [...prev, { id: data.id, name: data.name }]);
+                setName("");
+            })
+            .catch(() => {
+                const nextId = focusData && focusData.length > 0 ? focusData[focusData.length - 1].id + 1 : 1;
+                const newFocus = { id: nextId, name: trimmed };
+                setFocusData([...focusData, newFocus]);
+                setName("");
+            });
     }
 
     const handleRemove = (tagID : number) => {
-        setFocusData(prev =>
-            prev.filter(tag => tag.id !== tagID)
-        );
+        fetch(`${API_BASE}/focus/?remove_id=${tagID}`, { method: "DELETE" })
+            .then((res) => res.json())
+            .then(() => {
+                setFocusData((prev) => prev.filter((tag) => tag.id !== tagID));
+            })
+            .catch(() => {
+                setFocusData((prev) => prev.filter((tag) => tag.id !== tagID));
+            });
     }
+
+    useEffect(() => {
+        fetch(`${API_BASE}/focus/`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data || data.error) return;
+                setFocusData(data);
+            })
+            .catch(() => {
+                // keep empty
+            });
+    }, []);
 
 
     return (

@@ -1,30 +1,60 @@
-import { MockOwnerProfile } from "@/mock/owner_profile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListItem from "../ListItem";
 
 export default function SkillForm() {
-    const [skillData, setSkillData] = useState(MockOwnerProfile.core_skills);
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+    const [skillData, setSkillData] = useState<{ id: number; name: string; description?: string }[]>([]);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
 
+    useEffect(() => {
+        fetch(`${API_BASE}/skill/`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data || data.error) return;
+                setSkillData(data);
+            })
+            .catch(() => {
+            });
+    }, []);
+
 
     const addSkill = () => {
-        const newSkill = {
-            id: skillData.length > 0 ? skillData[skillData.length - 1].id + 1 : 1,
-            name: name,
-            description: description
-        }
+        fetch(`${API_BASE}/skill/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, description }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setSkillData((prev) => [...prev, { id: data.id, name: data.name, description: data.description }]);
+                setName("");
+                setDescription("");
+            })
+            .catch(() => {
+                const newSkill = {
+                    id: skillData.length > 0 ? skillData[skillData.length - 1].id + 1 : 1,
+                    name: name,
+                    description: description,
+                };
 
-        setSkillData([...skillData, newSkill]);
-        setName("");
-        setDescription("");
+                setSkillData([...skillData, newSkill]);
+                setName("");
+                setDescription("");
+            });
 
     }
 
     const handleRemove = (skillID : number) => {
-        setSkillData(prev =>
-            prev.filter(skill => skill.id !== skillID)
-        );
+        fetch(`${API_BASE}/skill/${skillID}`, { method: "DELETE" })
+            .then((res) => res.json())
+            .then(() => {
+                setSkillData((prev) => prev.filter((skill) => skill.id !== skillID));
+            })
+            .catch(() => {
+                setSkillData((prev) => prev.filter((skill) => skill.id !== skillID));
+            });
     }
 
     return (

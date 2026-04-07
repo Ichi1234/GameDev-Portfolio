@@ -21,22 +21,29 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(profile)
 
-    created_skills = []
-    if body.core_skills:
-        for s in body.core_skills:
-            skill = OwnerSkill(skill=s)
-            db.add(skill)
-            created_skills.append(s)
+    return {
+        "portfolio_title": profile.portfolio_title,
+        "main_quote": profile.main_quote,
+        "sub_quote": profile.sub_quote,
+        "introduction": profile.introduction,
+        "github_link": profile.github_link,
+    }
 
-    created_focuses = []
-    if body.current_focus:
-        for f in body.current_focus:
-            focus = OwnerFocus(focus=f)
-            db.add(focus)
-            created_focuses.append(focus)
+@router.put("/")
+def change_profile(body: ProfileCreate, db: Session = Depends(get_db)):
+    profile = db.query(OwnerProfile).first()
 
-    if created_skills or created_focuses:
-        db.commit()
+    if not profile:
+        return {"error": "Profile not found"}
+
+    profile.portfolio_title = body.portfolio_title
+    profile.main_quote = body.main_quote
+    profile.sub_quote = body.sub_quote
+    profile.introduction = body.introduction
+    profile.github_link = body.github_link
+
+    db.commit()
+    db.refresh(profile)
 
     return {
         "portfolio_title": profile.portfolio_title,
@@ -44,8 +51,6 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
         "github_link": profile.github_link,
-        "core_skills": created_skills,
-        "current_focus": created_focuses,
     }
 
 
@@ -64,6 +69,6 @@ def get_profile(db: Session = Depends(get_db)):
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
         "github_link": profile.github_link,
-        "core_skills": [{s.skill, s.description} for s in skills],
-        "current_focus": [f.focus for f in focuses],
+        "core_skills": [{"id": s.id, "name": s.skill, "description": s.description} for s in skills],
+        "current_focus": [{"id": f.id, "name": f.focus} for f in focuses],
     }

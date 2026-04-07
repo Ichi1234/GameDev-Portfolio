@@ -6,6 +6,10 @@ class ProfileCreate(BaseModel):
     sub_quote : str
     introduction : str
     github_link : str
-    core_skills : list[dict]  
-    current_focus : list[dict]
-    
+
+class SkillCreate(BaseModel):
+    name : str
+    description : str
+
+class FocusCreate(BaseModel):
+    name : str

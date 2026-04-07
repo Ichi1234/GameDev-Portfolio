@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListItem from "../ListItem";
 
 export default function TagPlatForm() {
     type Item = { id: number; name: string };
+
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     const [tagData, setTagData] = useState<Item[]>([]);
     const [platformData, setPlatformData] = useState<Item[]>([]);
@@ -14,35 +16,87 @@ export default function TagPlatForm() {
         const trimmed = name.trim();
         if (!trimmed) return;
 
-        const nextId = tagData.length > 0 ? tagData[tagData.length - 1].id + 1 : 1;
-        const newTag: Item = { id: nextId, name: trimmed };
-
-        setTagData((prev) => [...prev, newTag]);
-        setName("");
+        fetch(`${API_BASE}/tag/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: trimmed }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const id = data.id ?? (tagData.length > 0 ? tagData[tagData.length - 1].id + 1 : 1);
+                const text = data.name ?? trimmed;
+                setTagData((prev) => [...prev, { id, name: text }]);
+                setName("");
+            })
+            .catch(() => {
+                const nextId = tagData.length > 0 ? tagData[tagData.length - 1].id + 1 : 1;
+                const newTag: Item = { id: nextId, name: trimmed };
+                setTagData((prev) => [...prev, newTag]);
+                setName("");
+            });
     }
 
     const addPlatform = () => {
         const trimmed = name.trim();
         if (!trimmed) return;
 
-        const nextId = platformData.length > 0 ? platformData[platformData.length - 1].id + 1 : 1;
-        const newPlat: Item = { id: nextId, name: trimmed };
-
-        setPlatformData((prev) => [...prev, newPlat]);
-        setName("");
+        fetch(`${API_BASE}/platform/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: trimmed }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const id = data.id ?? (platformData.length > 0 ? platformData[platformData.length - 1].id + 1 : 1);
+                const text = data.name ?? trimmed;
+                setPlatformData((prev) => [...prev, { id, name: text }]);
+                setName("");
+            })
+            .catch(() => {
+                const nextId = platformData.length > 0 ? platformData[platformData.length - 1].id + 1 : 1;
+                const newPlat: Item = { id: nextId, name: trimmed };
+                setPlatformData((prev) => [...prev, newPlat]);
+                setName("");
+            });
     }
 
     const handleRemove = (componentType : string, componentID : number) => {
         if (componentType === "tag") {
-            setTagData((prev) => prev.filter((t) => t.id !== componentID));
+            fetch(`${API_BASE}/tag/?remove_id=${componentID}`, { method: "DELETE" })
+                .then((res) => res.json())
+                .then(() => setTagData((prev) => prev.filter((t) => t.id !== componentID)))
+                .catch(() => setTagData((prev) => prev.filter((t) => t.id !== componentID)));
+
             return;
         }
 
         if (componentType === "platform") {
-            setPlatformData((prev) => prev.filter((p) => p.id !== componentID));
+            fetch(`${API_BASE}/platform/?remove_id=${componentID}`, { method: "DELETE" })
+                .then((res) => res.json())
+                .then(() => setPlatformData((prev) => prev.filter((p) => p.id !== componentID)))
+                .catch(() => setPlatformData((prev) => prev.filter((p) => p.id !== componentID)));
+
             return;
         }
     }
+
+    useEffect(() => {
+        fetch(`${API_BASE}/tag/`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data || data.error) return;
+                setTagData(data);
+            })
+            .catch(() => {});
+
+        fetch(`${API_BASE}/platform/`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data || data.error) return;
+                setPlatformData(data);
+            })
+            .catch(() => {});
+    }, []);
 
     return (
         <form className="flex flex-col gap-6 font-title">
@@ -67,7 +121,7 @@ export default function TagPlatForm() {
             </div>
             
 
-            <h2 className="font-title font-bold text-admintitle text-xl mt-4">Skill List</h2>
+            <h2 className="font-title font-bold text-admintitle text-xl mt-4">Tag List</h2>
 
             <div>
                 {tagData.map((tag) => (
