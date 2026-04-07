@@ -25,7 +25,7 @@ def create_skill(body: SkillCreate, db: Session = Depends(get_db)):
     }
 
 
-@router.delete("/")
+@router.delete("/{remove_id}")
 def delete_skill(remove_id: int, db: Session = Depends(get_db)):
     skill = db.query(OwnerSkill).filter(OwnerSkill.id == remove_id).first()
 
@@ -34,7 +34,7 @@ def delete_skill(remove_id: int, db: Session = Depends(get_db)):
 
     response = {
         "id": skill.id,
-        "name": skill.focus
+        "name": skill.skill
     }
 
     db.delete(skill)

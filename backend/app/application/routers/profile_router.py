@@ -27,8 +27,30 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
         "github_link": profile.github_link,
-        "core_skills": [],
-        "current_focus": [],
+    }
+
+@router.put("/")
+def change_profile(body: ProfileCreate, db: Session = Depends(get_db)):
+    profile = db.query(OwnerProfile).first()
+
+    if not profile:
+        return {"error": "Profile not found"}
+
+    profile.portfolio_title = body.portfolio_title
+    profile.main_quote = body.main_quote
+    profile.sub_quote = body.sub_quote
+    profile.introduction = body.introduction
+    profile.github_link = body.github_link
+
+    db.commit()
+    db.refresh(profile)
+
+    return {
+        "portfolio_title": profile.portfolio_title,
+        "main_quote": profile.main_quote,
+        "sub_quote": profile.sub_quote,
+        "introduction": profile.introduction,
+        "github_link": profile.github_link,
     }
 
 
