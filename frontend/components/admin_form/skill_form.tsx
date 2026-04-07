@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import ListItem from "../ListItem";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function SkillForm() {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     const [skillData, setSkillData] = useState<{ id: number; name: string; description?: string }[]>([]);
     const [name, setName] = useState("");

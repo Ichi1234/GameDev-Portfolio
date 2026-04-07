@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function MainForm() {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     const [portfolioTitle, setPortfolioTitle] = useState("");
     const [mainQuote, setMainQuote] = useState("");
@@ -51,7 +52,7 @@ export default function MainForm() {
                 alert("Save failed");
             }
         } catch (err) {
-            alert("Save failed");
+            alert(`Save failed : ${err}`);
         } finally {
             setLoading(false);
         }

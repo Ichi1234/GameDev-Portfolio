@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import ListItem from "../ListItem";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function FocusForm() {
-    
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     const [focusData, setFocusData] = useState<{ id: number; name: string }[]>([]);
     const [name, setName] = useState("");
