@@ -13,8 +13,8 @@ export default function AdminPage() {
     const [activeTab, setActiveTab] = useState("main");
 
     const tabs = [
-        { key: "main", label: "Main" },
         { key: "game", label: "Game" },
+        { key: "main", label: "Main" },
         { key: "skill", label: "Skill" },
         { key: "focus", label: "Focus" },
         { key:"tag-platform", label: "Tag & Platform" }
