@@ -3,7 +3,7 @@ import shutil
 
 from pathlib import Path
 from typing import Optional, List
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GamePhoto, GameVideo
@@ -284,6 +284,8 @@ def update_game(
     cover_img: Optional[UploadFile] = File(None),
     photos: List[UploadFile] = File(default=[]),
     videos: List[UploadFile] = File(default=[]),
+    photos_to_delete: Optional[str] = Form(None),
+    videos_to_delete: Optional[str] = Form(None),
     db: Session = Depends(get_db),
 ):
     game = db.query(Game).filter(Game.id == game_id).first()
@@ -357,6 +359,42 @@ def update_game(
             return f"/storage/games/{safe_name}/{upload.filename}"
         except Exception:
             return None
+
+    def _resolve(path_str: Optional[str]) -> Optional[Path]:
+        if not path_str:
+            return None
+        rel = path_str.replace("/storage/games/", "").lstrip("/")
+        return STORAGE_BASE / rel
+
+    if photos_to_delete:
+        for item in photos_to_delete.split(","):
+            name = item.strip()
+            if not name:
+                continue
+            for p in db.query(GamePhoto).filter(GamePhoto.game_id == game.id).all():
+                try:
+                    if p.file_path == name or p.file_path.endswith(f"/{name}") or p.file_path.endswith(name):
+                        p_path = _resolve(p.file_path)
+                        if p_path and p_path.exists():
+                            p_path.unlink()
+                        db.delete(p)
+                except Exception:
+                    pass
+
+    if videos_to_delete:
+        for item in videos_to_delete.split(","):
+            name = item.strip()
+            if not name:
+                continue
+            for v in db.query(GameVideo).filter(GameVideo.game_id == game.id).all():
+                try:
+                    if v.file_path == name or v.file_path.endswith(f"/{name}") or v.file_path.endswith(name):
+                        v_path = _resolve(v.file_path)
+                        if v_path and v_path.exists():
+                            v_path.unlink()
+                        db.delete(v)
+                except Exception:
+                    pass
 
     if game_file:
         if game.download_path:
