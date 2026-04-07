@@ -174,6 +174,107 @@ def create_game(
     return {"id": game.id}
 
 
+@router.delete("/{remove_id}")
+def delete_game(remove_id: int, db: Session = Depends(get_db)):
+    game = db.query(Game).filter(Game.id == remove_id).first()
+
+    if not game:
+        return {"error": "Game not found"}
+
+    response = {"id": game.id, "name": game.title}
+
+    def _resolve(path_str: Optional[str]) -> Optional[Path]:
+        if not path_str:
+            return None
+        rel = path_str.replace("/storage/games/", "").lstrip("/")
+        return STORAGE_BASE / rel
+
+    try:
+        cover_path = _resolve(game.cover_img_path)
+        if cover_path and cover_path.exists():
+            cover_path.unlink()
+    except Exception:
+        pass
+
+    try:
+        download_path = _resolve(game.download_path)
+        if download_path and download_path.exists():
+            download_path.unlink()
+    except Exception:
+        pass
+
+    photos = db.query(GamePhoto).filter(GamePhoto.game_id == game.id).all()
+    for p in photos:
+        try:
+            p_path = _resolve(p.file_path)
+            if p_path and p_path.exists():
+                p_path.unlink()
+        except Exception:
+            pass
+        try:
+            db.delete(p)
+        except Exception:
+            pass
+
+    videos = db.query(GameVideo).filter(GameVideo.game_id == game.id).all()
+    for v in videos:
+        try:
+            v_path = _resolve(v.file_path)
+            if v_path and v_path.exists():
+                v_path.unlink()
+        except Exception:
+            pass
+        try:
+            db.delete(v)
+        except Exception:
+            pass
+
+    changelogs = db.query(GameChangelog).filter(GameChangelog.game_id == game.id).all()
+    for c in changelogs:
+        try:
+            db.delete(c)
+        except Exception:
+            pass
+
+    tag_links = db.query(GameTag).filter(GameTag.game_id == game.id).all()
+    for tl in tag_links:
+        try:
+            db.delete(tl)
+        except Exception:
+            pass
+
+    plat_links = db.query(GamePlatform).filter(GamePlatform.game_id == game.id).all()
+    for pl in plat_links:
+        try:
+            db.delete(pl)
+        except Exception:
+            pass
+
+    safe_name = None
+    candidates = [game.cover_img_path, game.download_path]
+    candidates += [p.file_path for p in photos]
+    candidates += [v.file_path for v in videos]
+    for c in candidates:
+        if c:
+            rel = c.replace("/storage/games/", "").lstrip("/")
+            parts = rel.split("/", 1)
+            if parts:
+                safe_name = parts[0]
+                break
+
+    if safe_name:
+        try:
+            dir_path = STORAGE_BASE / safe_name
+            if dir_path.exists():
+                shutil.rmtree(dir_path)
+        except Exception:
+            pass
+
+    db.delete(game)
+    db.commit()
+
+    return response
+    
 
 @router.put("/{game_id}")
 def update_game(
