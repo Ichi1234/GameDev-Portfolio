@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import ListItem from "../../ListItem";
 import { Game } from "@/types/game";
 
 type Props = {
@@ -43,6 +45,19 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
     const [clDate, setClDate] = useState("");
     const [ clDescription, setClDescription] = useState("");
 
+    const [newCoverFile, setNewCoverFile] = useState<File | null>(null);
+    const [newCoverPreview, setNewCoverPreview] = useState<string | null>(null);
+
+    const [newPhotos, setNewPhotos] = useState<File[] | null>(null);
+    const [newPhotoPreviews, setNewPhotoPreviews] = useState<string[]>([]);
+
+    const [newVideos, setNewVideos] = useState<File[] | null>(null);
+    const [newVideoPreviews, setNewVideoPreviews] = useState<string[]>([]);
+    const [newVideoPosters, setNewVideoPosters] = useState<string[]>([]);
+
+    const [photosToDelete, setPhotosToDelete] = useState<string[]>([]);
+    const [videosToDelete, setVideosToDelete] = useState<string[]>([]);
+
     const addChangelog = () => {
         if (!version || !clDate || !clDescription) return;
 
@@ -74,6 +89,70 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         setPlatformSearch("");
         setPlatformDropdownOpen(false);
     };
+
+    useEffect(() => {
+        return () => {
+            if (newCoverPreview) URL.revokeObjectURL(newCoverPreview);
+            newPhotoPreviews.forEach((u) => URL.revokeObjectURL(u));
+            newVideoPreviews.forEach((u) => URL.revokeObjectURL(u));
+        };
+    }, [newCoverPreview, newPhotoPreviews, newVideoPreviews]);
+
+
+    const handleNewCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const f = e.target.files?.[0] ?? null;
+        if (newCoverPreview) URL.revokeObjectURL(newCoverPreview);
+        setNewCoverFile(f);
+        setNewCoverPreview(f ? URL.createObjectURL(f) : null);
+    };
+
+    const handleNewPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files ? Array.from(e.target.files) : [];
+        if (files.length === 0) return;
+        const urls = files.map((f) => URL.createObjectURL(f));
+        setNewPhotos((prev) => (prev ? [...prev, ...files] : files));
+        setNewPhotoPreviews((prev) => [...prev, ...urls]);
+    };
+
+    const handleNewVideosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files ? Array.from(e.target.files) : [];
+        if (files.length === 0) return;
+        const urls = files.map((f) => URL.createObjectURL(f));
+        setNewVideos((prev) => (prev ? [...prev, ...files] : files));
+        setNewVideoPreviews((prev) => [...prev, ...urls]);
+    };
+
+    const removeNewPhotoAt = (index: number) => {
+        if (!newPhotos) return;
+        const newFiles = [...newPhotos];
+        newFiles.splice(index, 1);
+        const newUrls = [...newPhotoPreviews];
+        const removed = newUrls.splice(index, 1);
+        removed.forEach((u) => URL.revokeObjectURL(u));
+        setNewPhotos(newFiles.length ? newFiles : null);
+        setNewPhotoPreviews(newUrls);
+    };
+
+    const removeNewVideoAt = (index: number) => {
+        if (!newVideos) return;
+        const newFiles = [...newVideos];
+        newFiles.splice(index, 1);
+        const newUrls = [...newVideoPreviews];
+        const removed = newUrls.splice(index, 1);
+        removed.forEach((u) => URL.revokeObjectURL(u));
+        setNewVideos(newFiles.length ? newFiles : null);
+        setNewVideoPreviews(newUrls);
+        setNewVideoPreviews(newUrls);
+    };
+
+    const togglePhotoDelete = (path: string) => {
+        setPhotosToDelete((prev) => (prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]));
+    };
+
+    const toggleVideoDelete = (path: string) => {
+        setVideosToDelete((prev) => (prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]));
+    };
+
 
     return (
         <form className="flex flex-col gap-6 font-title">
@@ -310,7 +389,23 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     placeholder="Upload your game cover image..."
                     className="file-input"
                     type="file"
+                    accept="image/*"
+                    onChange={handleNewCoverChange}
                 />
+
+                {/* existing cover from backend */}
+                {gameData.cover_img_path && !newCoverPreview && (
+                    <div className="mt-2">
+                        <Image src={gameData.cover_img_path} alt="cover" width={160} height={160} className="object-cover rounded" />
+                    </div>
+                )}
+
+                {/* new cover preview */}
+                {newCoverPreview && (
+                    <div className="mt-2">
+                        <Image src={newCoverPreview} alt="new cover" width={160} height={160} className="object-cover rounded" />
+                    </div>
+                )}
             </div>
 
             <div>
@@ -319,7 +414,48 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     placeholder="Upload your game photo..." 
                     className="file-input"
                     type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleNewPhotosChange}
                 />
+
+                {/* existing photos with toggle delete */}
+                {gameData.photos && gameData.photos.length > 0 && (
+                    <div className="mt-2 flex gap-2 flex-wrap">
+                        {gameData.photos.map((p) => (
+                            <div key={p} className={`relative ${photosToDelete.includes(p) ? "opacity-50" : ""}`}>
+                                <Image src={p} alt="existing-photo" width={112} height={112} className="object-cover rounded" />
+                                <button
+                                    type="button"
+                                    onClick={() => togglePhotoDelete(p)}
+                                    className="absolute -top-2 -right-2 w-6 h-6 text-lg rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg"
+                                    aria-label="Toggle delete photo"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* new photo previews */}
+                {newPhotoPreviews.length > 0 && (
+                    <div className="mt-4 flex gap-2 flex-wrap">
+                        {newPhotoPreviews.map((src, i) => (
+                            <div key={src} className="relative">
+                                <Image src={src} alt={`new-photo-${i}`} width={112} height={112} className="object-cover rounded" />
+                                <button
+                                    type="button"
+                                    onClick={() => removeNewPhotoAt(i)}
+                                    className="absolute -top-2 -right-2 w-6 h-6 text-lg rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg"
+                                    aria-label="Remove new photo"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div>
@@ -328,7 +464,29 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     placeholder="Upload your game video..."
                     className="file-input"
                     type="file"
+                    multiple
+                    accept="video/*"
+                    onChange={handleNewVideosChange}
                 />
+
+                {/* existing videos with toggle delete */}
+                {gameData.videos && gameData.videos.length > 0 && (
+                    <div className="mt-2 flex flex-col gap-2">
+                        {gameData.videos.map((v) => {
+                            const name = v.split("/").pop() || v;
+                            return <ListItem key={v} title={name} onRemove={() => toggleVideoDelete(v)} />;
+                        })}
+                    </div>
+                )}
+
+                {/* new video previews */}
+                {newVideos && newVideos.length > 0 && (
+                    <div className="mt-4 flex flex-col gap-2">
+                        {newVideos.map((f, i) => (
+                            <ListItem key={`${f.name}-${i}`} title={f.name} onRemove={() => removeNewVideoAt(i)} />
+                        ))}
+                    </div>
+                )}
             </div>
 
             <p className="text-admintitle font-bold mt-6">Change Logs</p>
