@@ -1,5 +1,6 @@
 import os
 import shutil
+import json
 
 from pathlib import Path
 from typing import Optional, List
@@ -76,13 +77,20 @@ def get_game(db: Session = Depends(get_db)):
 
 @router.post("/")
 def create_game(
-    body: GameCreate,
+    body: str = Form(...),
     game_file: Optional[UploadFile] = File(None),
     cover_img: Optional[UploadFile] = File(None),
     photos: List[UploadFile] = File(default=[]),
     videos: List[UploadFile] = File(default=[]),
     db: Session = Depends(get_db),
 ):
+    try:
+        body_data = json.loads(body)
+    except Exception:
+        body_data = {}
+
+    body = GameCreate.parse_obj(body_data)
+
     game = Game(
         title=body.title,
         description=body.description,
@@ -278,8 +286,8 @@ def delete_game(remove_id: int, db: Session = Depends(get_db)):
 
 @router.put("/{game_id}")
 def update_game(
-    body: GameCreate,
     game_id: int,
+    body: str = Form(...),
     game_file: Optional[UploadFile] = File(None),
     cover_img: Optional[UploadFile] = File(None),
     photos: List[UploadFile] = File(default=[]),
@@ -288,6 +296,14 @@ def update_game(
     videos_to_delete: Optional[str] = Form(None),
     db: Session = Depends(get_db),
 ):
+    try:
+        body_data = json.loads(body)
+    except Exception:
+        body_data = {}
+
+    body = GameCreate.parse_obj(body_data)
+
+    game = db.query(Game).filter(Game.id == game_id).first()
     game = db.query(Game).filter(Game.id == game_id).first()
     if not game:
         return {"error": "Game not found"}

@@ -33,6 +33,7 @@ export default function GameDetail() {
                     src={game.cover_img_path || "/img/default_cover_img.png"}
                     alt="Cover Image of the game"
                     fill
+                    unoptimized
                 />
 
                 <div className="absolute inset-0 bg-linear-to-t from-cardbackground via-cardbackground/40 to-transparent"></div>
