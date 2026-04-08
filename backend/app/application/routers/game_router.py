@@ -15,6 +15,7 @@ STORAGE_BASE = Path(__file__).resolve().parents[4] / "backend" / "storage" / "ga
 
 router = APIRouter(prefix="/games", tags=["Games"])
 
+
 @router.get("/")
 def get_game(db: Session = Depends(get_db)):
     games = db.query(Game).all()
@@ -71,7 +72,6 @@ def get_game(db: Session = Depends(get_db)):
         )
 
     return result
-
 
 
 @router.post("/")

@@ -1,23 +1,50 @@
 import ListItem from "@/components/ListItem";
-import { MockGamesData } from "@/mock/game";
 import { Game } from "@/types/game";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 type Props = {
     setScreen: (screen: string) => void;
     setSelectedGame: (game: Game) => void;
 };
 
-export default function GameHomeForm({ setScreen, setSelectedGame }: Props) {
-    const [gameLst, setGameLst] = useState(MockGamesData);
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
 
-    const handleRemove = (gameID: number) => {
-        setGameLst(prev =>
-            prev.filter(game => game.id !== gameID)
-        );
+export default function GameHomeForm({ setScreen, setSelectedGame }: Props) {
+    const [gameLst, setGameLst] = useState<Game[]>([]);
+
+    useEffect(() => {
+        const fetchGames = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/games/`);
+                if (!res.ok) return setGameLst([]);
+                const data = await res.json();
+                if (Array.isArray(data)) setGameLst(data as Game[]);
+                else if (data && data.error) setGameLst([]);
+            } catch (err) {
+                console.error("Failed to fetch games:", err);
+                setGameLst([]);
+            }
+        };
+
+        fetchGames();
+    }, []);
+
+    const handleRemove = async (gameID: number) => {
+        if (!confirm("Delete this game?")) return;
+        try {
+            const res = await fetch(`${API_BASE}/games/${gameID}`, { method: "DELETE" });
+            if (res.ok) {
+                setGameLst((prev) => prev.filter((game) => game.id !== gameID));
+            } else {
+                const text = await res.text();
+                alert("Failed to delete: " + text);
+            }
+        } catch (err) {
+            alert("Network error: " + String(err));
+        }
     };
 
-    const handleEdit = (data : Game) => {
+    const handleEdit = (data: Game) => {
         setSelectedGame(data);
         setScreen("edit");
     }
