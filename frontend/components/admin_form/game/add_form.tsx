@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import ListItem from "../../ListItem";
 import { TagAndPlatform } from "@/types/tag_platform";
-import { ChangeLog } from "@/types/change_log";
+import { ChangeLogInput } from "@/types/change_log";
 
 type Props = {
     setScreen: (screen: string) => void;
@@ -32,7 +32,7 @@ export default function GameAddForm({ setScreen }: Props) {
     const [platforms, setPlatforms] = useState<string[]>([]);
 
     // Change Log (start empty for new game)
-    const [changelogLst, setChangelogLst] = useState<ChangeLog[]>([]);
+    const [changelogLst, setChangelogLst] = useState<ChangeLogInput[]>([]);
 
     const [version, setVersion] = useState("");
     const [date, setDate] = useState("");

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import ListItem from "../../ListItem";
-import { Game } from "@/types/game";
+import { Game, GameInput } from "@/types/game";
 import { TagAndPlatform } from "@/types/tag_platform";
 
 type Props = {
@@ -205,7 +205,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             return undefined;
         })();
 
-        const bodyObj: Partial<Game> = {
+        const bodyObj: Partial<GameInput> = {
             title,
             description,
             type: typeVal,
