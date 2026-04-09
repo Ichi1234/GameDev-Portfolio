@@ -11,12 +11,14 @@ export default function TagPlatForm() {
     const [platformData, setPlatformData] = useState<Item[]>([]);
 
     const [name, setName] = useState("");
+    const [tagLoading, setTagLoading] = useState(false);
+    const [platformLoading, setPlatformLoading] = useState(false);
 
 
     const addTag = () => {
         const trimmed = name.trim();
         if (!trimmed) return;
-
+        setTagLoading(true);
         fetch(`${API_BASE}/tag/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -34,13 +36,14 @@ export default function TagPlatForm() {
                 const newTag: Item = { id: nextId, name: trimmed };
                 setTagData((prev) => [...prev, newTag]);
                 setName("");
-            });
+            })
+            .finally(() => setTagLoading(false));
     }
 
     const addPlatform = () => {
         const trimmed = name.trim();
         if (!trimmed) return;
-
+        setPlatformLoading(true);
         fetch(`${API_BASE}/platform/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -58,7 +61,8 @@ export default function TagPlatForm() {
                 const newPlat: Item = { id: nextId, name: trimmed };
                 setPlatformData((prev) => [...prev, newPlat]);
                 setName("");
-            });
+            })
+            .finally(() => setPlatformLoading(false));
     }
 
     const handleRemove = (componentType : string, componentID : number) => {
@@ -103,22 +107,23 @@ export default function TagPlatForm() {
         <form className="flex flex-col gap-6 font-title">
                 <div>
                     <label className="text-admintitle">Name</label>
-                    <input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter skill name..."
-                        className="input-style"
-                    />
+                        <input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Enter skill name..."
+                            className="input-style"
+                            disabled={tagLoading || platformLoading}
+                        />
                 </div>
 
             <div className="flex gap-x-4">
-                <button type="button" onClick={addTag} className="btn-primary">
-                    ADD TAG
-                </button>
+                    <button type="button" onClick={addTag} className="btn-primary" disabled={tagLoading}>
+                        {tagLoading ? "Adding..." : "ADD TAG"}
+                    </button>
 
-                <button type="button" onClick={addPlatform} className="btn-primary">
-                    ADD PLATFORM
-                </button>
+                    <button type="button" onClick={addPlatform} className="btn-primary" disabled={platformLoading}>
+                        {platformLoading ? "Adding..." : "ADD PLATFORM"}
+                    </button>
             </div>
             
 

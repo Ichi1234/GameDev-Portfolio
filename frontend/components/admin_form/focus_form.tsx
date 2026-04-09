@@ -7,12 +7,13 @@ export default function FocusForm() {
 
     const [focusData, setFocusData] = useState<{ id: number; name: string }[]>([]);
     const [name, setName] = useState("");
+    const [loading, setLoading] = useState(false);
     
     
     const addFocus = () => {
         const trimmed = name.trim();
         if (!trimmed) return;
-
+        setLoading(true);
         fetch(`${API_BASE}/focus/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -28,7 +29,8 @@ export default function FocusForm() {
                 const newFocus = { id: nextId, name: trimmed };
                 setFocusData([...focusData, newFocus]);
                 setName("");
-            });
+            })
+            .finally(() => setLoading(false));
     }
 
     const handleRemove = (tagID : number) => {
@@ -64,11 +66,12 @@ export default function FocusForm() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter skill name..."
                     className="input-style"
+                    disabled={loading}
                 />
             </div>
 
             <button type="button" onClick={addFocus} className="btn-primary">
-                ADD
+                {loading ? "Adding..." : "ADD"}
             </button>
 
             <h2 className="font-title font-bold text-admintitle text-xl">Focus List</h2>
