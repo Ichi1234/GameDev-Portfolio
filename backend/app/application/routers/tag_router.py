@@ -19,7 +19,7 @@ def create_tag(body: GameTagCreate, db: Session = Depends(get_db)):
 
     return {
         "id": tag.id,
-        "name" : tag.skill,
+        "name" : tag.name,
     }
 
 
@@ -32,7 +32,7 @@ def delete_tag(remove_id: int, db: Session = Depends(get_db)):
 
     response = {
         "id": tag.id,
-        "name": tag.focus
+        "name": tag.name
     }
 
     db.delete(tag)
