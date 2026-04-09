@@ -9,6 +9,13 @@ type Props = {
 };
 
 export default function GameShowcase({ game }: Props) {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+
+  const toAbsolute = (src?: string) => {
+    if (!src) return "";
+    if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("//")) return src;
+    return `${API_BASE}${src.startsWith("/") ? "" : "/"}${src}`;
+  };
   const media = [
     ...(game?.videos?.map((v) => ({ type: "video", src: v })) || []),
     ...(game?.photos?.map((p) => ({ type: "image", src: p })) || []),
@@ -82,7 +89,7 @@ export default function GameShowcase({ game }: Props) {
                       crossOrigin="anonymous"
                       className="w-full h-full object-cover"
                     >
-                      <source src={item.src} type={getMimeType(item.src)} />
+                        <source src={toAbsolute(item.src)} type={getMimeType(item.src)} />
                     </video>
 
                     {/* ▶ Overlay */}
@@ -96,7 +103,7 @@ export default function GameShowcase({ game }: Props) {
                   </>
                 ) : (
                   <Image
-                    src={item.src}
+                    src={toAbsolute(item.src)}
                     alt="game image"
                     fill
                     unoptimized
