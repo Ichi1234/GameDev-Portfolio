@@ -137,8 +137,11 @@ def create_game(
             db.commit()
             db.refresh(tag)
 
-        gt = GameTag(game_id=game.id, tag_id=tag.id)
-        db.add(gt)
+        # avoid duplicate game-tag links
+        existing_gt = db.query(GameTag).filter(GameTag.game_id == game.id, GameTag.tag_id == tag.id).first()
+        if not existing_gt:
+            gt = GameTag(game_id=game.id, tag_id=tag.id)
+            db.add(gt)
 
     for name in body.platforms or []:
         plat = db.query(Platform).filter(Platform.name == name).first()
@@ -148,8 +151,11 @@ def create_game(
             db.commit()
             db.refresh(plat)
 
-        gp = GamePlatform(game_id=game.id, platform_id=plat.id)
-        db.add(gp)
+        # avoid duplicate game-platform links
+        existing_gp = db.query(GamePlatform).filter(GamePlatform.game_id == game.id, GamePlatform.platform_id == plat.id).first()
+        if not existing_gp:
+            gp = GamePlatform(game_id=game.id, platform_id=plat.id)
+            db.add(gp)
 
     if cover_img:
         saved_cover = _save_upload_file(cover_img)
@@ -169,13 +175,19 @@ def create_game(
             db.add(GameVideo(game_id=game.id, file_path=saved))
 
     for c in body.changelogs or []:
-        changelog = GameChangelog(
-            game_id=game.id,
-            version=c.version,
-            description=c.description,
-            date=c.date,
-        )
-        db.add(changelog)
+        # avoid duplicate changelog versions for the same game; update if exists
+        existing_cl = db.query(GameChangelog).filter(GameChangelog.game_id == game.id, GameChangelog.version == c.version).first()
+        if existing_cl:
+            existing_cl.description = c.description
+            existing_cl.date = c.date
+        else:
+            changelog = GameChangelog(
+                game_id=game.id,
+                version=c.version,
+                description=c.description,
+                date=c.date,
+            )
+            db.add(changelog)
 
     db.commit()
 
@@ -436,8 +448,11 @@ def update_game(
             db.commit()
             db.refresh(tag)
 
-        gt = GameTag(game_id=game.id, tag_id=tag.id)
-        db.add(gt)
+        # avoid duplicate game-tag links
+        existing_gt = db.query(GameTag).filter(GameTag.game_id == game.id, GameTag.tag_id == tag.id).first()
+        if not existing_gt:
+            gt = GameTag(game_id=game.id, tag_id=tag.id)
+            db.add(gt)
 
     for name in body.platforms or []:
         plat = db.query(Platform).filter(Platform.name == name).first()
@@ -447,8 +462,11 @@ def update_game(
             db.commit()
             db.refresh(plat)
 
-        gp = GamePlatform(game_id=game.id, platform_id=plat.id)
-        db.add(gp)
+        # avoid duplicate game-platform links
+        existing_gp = db.query(GamePlatform).filter(GamePlatform.game_id == game.id, GamePlatform.platform_id == plat.id).first()
+        if not existing_gp:
+            gp = GamePlatform(game_id=game.id, platform_id=plat.id)
+            db.add(gp)
 
     if cover_img:
         if game.cover_img_path:
@@ -477,13 +495,19 @@ def update_game(
             db.add(GameVideo(game_id=game.id, file_path=saved))
 
     for c in body.changelogs or []:
-        changelog = GameChangelog(
-            game_id=game.id,
-            version=c.version,
-            description=c.description,
-            date=c.date,
-        )
-        db.add(changelog)
+        # avoid duplicate changelog versions for the same game; update if exists
+        existing_cl = db.query(GameChangelog).filter(GameChangelog.game_id == game.id, GameChangelog.version == c.version).first()
+        if existing_cl:
+            existing_cl.description = c.description
+            existing_cl.date = c.date
+        else:
+            changelog = GameChangelog(
+                game_id=game.id,
+                version=c.version,
+                description=c.description,
+                date=c.date,
+            )
+            db.add(changelog)
 
     db.commit()
 
