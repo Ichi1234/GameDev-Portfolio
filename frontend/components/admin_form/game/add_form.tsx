@@ -78,6 +78,14 @@ export default function GameAddForm({ setScreen }: Props) {
         setPlatformDropdownOpen(false);
     };
 
+    const removeTag = (tag: string) => {
+        setSelectedTags((prev) => prev.filter((t) => t !== tag));
+    };
+
+    const removePlatform = (plat: string) => {
+        setPlatforms((prev) => prev.filter((p) => p !== plat));
+    };
+
     const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const f = e.target.files?.[0] ?? null;
         if (coverPreviewUrl) URL.revokeObjectURL(coverPreviewUrl);
@@ -227,6 +235,20 @@ export default function GameAddForm({ setScreen }: Props) {
                                 selectedTags.map((t) => (
                                     <div key={t} className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
                                         <span>{t}</span>
+                                        <svg
+                                            onClick={(e) => { e.stopPropagation(); removeTag(t); }}
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="14"
+                                            height="14"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            className="cursor-pointer hover:opacity-80 ml-1"
+                                        >
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
                                     </div>
                                 ))
                             ) : (
@@ -262,6 +284,20 @@ export default function GameAddForm({ setScreen }: Props) {
                             platforms.map((p) => (
                                 <div key={p} className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
                                     <span>{p}</span>
+                                    <svg
+                                        onClick={(e) => { e.stopPropagation(); removePlatform(p); }}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        className="cursor-pointer hover:opacity-80 ml-1"
+                                    >
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
                                 </div>
                             ))
                         ) : (
@@ -276,27 +312,14 @@ export default function GameAddForm({ setScreen }: Props) {
 
                 {platformDropdownOpen && (
                     <div className="bg-white rounded-xl shadow-lg mt-2 p-3 flex flex-col gap-2">
-                        <input
-                            value={platformSearch}
-                            onChange={(e) => setPlatformSearch(e.target.value)}
-                            placeholder="Search or type to add platform..."
-                            className="input-style"
-                        />
-
                         <div className="flex flex-col max-h-40 overflow-auto">
                             {platformDropdownData.length ? (
-                                platformDropdownData
-                                    .filter((q) => q.toLowerCase().includes(platformSearch.toLowerCase()))
-                                    .map((data) => (
-                                        <p key={data} onClick={() => addPlatform(data)} className="hover:bg-gray-100 p-1 cursor-pointer">{data}</p>
-                                    ))
+                                platformDropdownData.map((data) => (
+                                    <p key={data} onClick={() => addPlatform(data)} className="hover:bg-gray-100 p-1 cursor-pointer">{data}</p>
+                                ))
                             ) : (
                                 <div className="text-sm text-gray-500">No platforms available</div>
                             )}
-                        </div>
-
-                        <div className="flex justify-end">
-                            <button type="button" onClick={() => addPlatform()} className="btn-primary">Add</button>
                         </div>
                     </div>
                 )}

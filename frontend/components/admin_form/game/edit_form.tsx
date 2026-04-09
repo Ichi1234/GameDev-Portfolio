@@ -63,8 +63,8 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         date: c.date,
         description: c.description,
     }));
-
     const [changelogLst, setChangelogLst] = useState(initialChangelogs);
+    const initialChangelogsRef = { current: initialChangelogs } as { current: typeof initialChangelogs };
 
     const [version, setVersion] = useState("");
     const [clDate, setClDate] = useState("");
@@ -113,6 +113,10 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         if (!platforms.includes(v)) setPlatforms([...platforms, v]);
         setPlatformSearch("");
         setPlatformDropdownOpen(false);
+    };
+
+    const removePlatform = (plat: string) => {
+        setPlatforms((prev) => prev.filter((p) => p !== plat));
     };
 
     useEffect(() => {
@@ -191,18 +195,29 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
 
         setLoading(true);
 
-        const bodyObj = {
+        const changedChangelogs = (() => {
+            const a = initialChangelogsRef.current;
+            const b = changelogLst;
+            if (a.length !== b.length) return b;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i].version !== b[i].version || a[i].date !== b[i].date || a[i].description !== b[i].description) return b;
+            }
+            return undefined;
+        })();
+
+        const bodyObj: Partial<Game> = {
             title,
             description,
             type: typeVal,
-            start_date: startDate || null,
-            release_date: releaseDate || null,
+            start_date: startDate,
+            release_date: releaseDate,
             repository_link: repository,
             status,
             tags: selectedTags,
             platforms: platforms,
-            changelogs: changelogLst,
         };
+
+        if (changedChangelogs !== undefined) bodyObj.changelogs = changedChangelogs;
 
         const form = new FormData();
         form.append("body", JSON.stringify(bodyObj));
@@ -373,7 +388,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                                 <div key={p} className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
                                     <span>{p}</span>
                                     <svg
-                                        onClick={(e) => { e.stopPropagation(); setPlatforms(platforms.filter(x => x !== p)); }}
+                                        onClick={(e) => { e.stopPropagation(); removePlatform(p); }}
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="14"
                                         height="14"
@@ -409,25 +424,16 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
 
                 {platformDropdownOpen && (
                     <div className="bg-white rounded-xl shadow-lg mt-2 p-3 flex flex-col gap-2">
-                        <input
-                            value={platformSearch}
-                            onChange={(e) => setPlatformSearch(e.target.value)}
-                            placeholder="Search or type to add platform..."
-                            className="input-style"
-                        />
-
                         <div className="flex flex-col max-h-40 overflow-auto">
-                            {platformDropdownData
-                                .filter((p) => p.toLowerCase().includes(platformSearch.toLowerCase()))
-                                .map((p) => (
+                            {platformDropdownData.length ? (
+                                platformDropdownData.map((p) => (
                                     <p key={p} onClick={() => addPlatform(p)} className="hover:bg-gray-100 p-1 cursor-pointer">
                                         {p}
                                     </p>
-                                ))}
-                        </div>
-
-                        <div className="flex justify-end">
-                            <button type="button" onClick={() => addPlatform()} className="btn-primary">Add</button>
+                                ))
+                            ) : (
+                                <div className="text-sm text-gray-500">No platforms available</div>
+                            )}
                         </div>
                     </div>
                 )}

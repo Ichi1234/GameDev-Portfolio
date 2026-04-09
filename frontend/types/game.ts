@@ -1,6 +1,4 @@
 type GameChangelog = {
-    id: number,
-    game_id: number,
     version: string,
     description: string,
     date: string
