@@ -393,7 +393,7 @@ export default function GameAddForm({ setScreen }: Props) {
             <div className="flex gap-x-2 text-sm! ">
                 <div className="flex gap-4 w-full">
                     <input value={version} onChange={(e) => setVersion(e.target.value)} placeholder="Version" className="input-style" />
-                    <input value={date} onChange={(e) => setDate(e.target.value)} placeholder="Date" className="input-style" />
+                    <input type="date" value={date} onChange={(e) => setDate(e.target.value)} placeholder="Date" className="input-style" />
                     <input value={clDescription} onChange={(e) => setClDescription(e.target.value)} placeholder="Description" className="input-style" />
                 </div>
 

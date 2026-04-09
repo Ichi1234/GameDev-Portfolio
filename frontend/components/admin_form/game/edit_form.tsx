@@ -588,6 +588,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     />
 
                     <input
+                        type="date"
                         value={clDate}
                         onChange={(e) => setClDate(e.target.value)}
                         placeholder="Date"
