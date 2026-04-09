@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import ListItem from "../../ListItem";
+import { TagAndPlatform } from "@/types/tag_platform";
+import { ChangeLog } from "@/types/change_log";
 
 type Props = {
     setScreen: (screen: string) => void;
@@ -17,17 +19,25 @@ export default function GameAddForm({ setScreen }: Props) {
     
 
     const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
-    const [tagDropdownData] = useState(["Test 1", "Test 2", "Test 3"]);
+    const [tagDropdownData, setTagDropdownData] = useState<string[]>([]);
+    const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
+    const [platformDropdownData, setPlatformDropdownData] = useState<string[]>([]);
+    const [platformSearch, setPlatformSearch] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [repository, setRepository] = useState("");
+    const [status, setStatus] = useState("");
+    const [typeVal, setTypeVal] = useState("");
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [platforms, setPlatforms] = useState<string[]>([]);
 
-    // Change Log
-    const [changelogLst, setChangelogLst] = useState([
-        { version: "1.0.0", date: "JAN 26, 2026", description: "All the main feature is finished, Published the demo." },
-        { version: "1.0.1", date: "JAN 26, 2026", description: "All EEEEEE." },
-    ]);
+    // Change Log (start empty for new game)
+    const [changelogLst, setChangelogLst] = useState<ChangeLog[]>([]);
 
     const [version, setVersion] = useState("");
     const [date, setDate] = useState("");
-    const [description, setDescription] = useState("");
+    const [clDescription, setClDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -36,6 +46,37 @@ export default function GameAddForm({ setScreen }: Props) {
             videoPreviewUrls.forEach((u) => URL.revokeObjectURL(u));
         };
     }, [coverPreviewUrl, photoPreviewUrls, videoPreviewUrls]);
+
+    // fetch tags and platforms for dropdowns
+    useEffect(() => {
+        const fetchLists = async () => {
+            try {
+                const t = await fetch(`${API_BASE}/tag/`);
+                if (t.ok) {
+                    const tags = await t.json();
+                    setTagDropdownData(Array.isArray(tags) ? tags.map((x: TagAndPlatform) => x.name) : []);
+                }
+
+                const p = await fetch(`${API_BASE}/platform/`);
+                if (p.ok) {
+                    const plats = await p.json();
+                    setPlatformDropdownData(Array.isArray(plats) ? plats.map((x: TagAndPlatform) => x.name) : []);
+                }
+            } catch (err) {
+
+            }
+        };
+
+        fetchLists();
+    }, []);
+
+    const addPlatform = (val?: string) => {
+        const v = (val ?? platformSearch ?? "").trim();
+        if (!v) return;
+        if (!platforms.includes(v)) setPlatforms((p) => [...p, v]);
+        setPlatformSearch("");
+        setPlatformDropdownOpen(false);
+    };
 
     const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const f = e.target.files?.[0] ?? null;
@@ -83,20 +124,66 @@ export default function GameAddForm({ setScreen }: Props) {
     };
 
     const addChangelog = () => {
-        if (!version || !date || !description) return;
-        const newLog = { version, date, description };
+        if (!version || !date || !clDescription) return;
+        const newLog = { version, date, description: clDescription };
         setChangelogLst((prev) => [...prev, newLog]);
         setVersion("");
         setDate("");
-        setDescription("");
+        setClDescription("");
     };
 
     const removeLog = (indexToRemove: number) => {
         setChangelogLst((prev) => prev.filter((_, i) => i !== indexToRemove));
     };
 
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        setLoading(true);
+
+        const bodyObj = {
+            title: title,
+            description: description,
+            type: typeVal,
+            start_date: null,
+            release_date: null,
+            repository_link: repository,
+            status: status,
+            tags: selectedTags,
+            platforms: platforms,
+            changelogs: changelogLst,
+        };
+
+        const form = new FormData();
+        form.append("body", JSON.stringify(bodyObj));
+        if (coverImg) form.append("cover_img", coverImg);
+        if (gamePhoto) gamePhoto.forEach((f) => form.append("photos", f));
+        if (gameVideo) gameVideo.forEach((f) => form.append("videos", f));
+
+        try {
+            const res = await fetch(`${API_BASE}/games/`, {
+                method: "POST",
+                body: form,
+            });
+
+            if (res.ok) {
+                setScreen("home");
+                return;
+            } else {
+                const text = await res.text();
+                alert("Failed to add game: " + text);
+            }
+        } catch (err) {
+            alert("Network error: " + String(err));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <form className="flex flex-col gap-6 font-title">
+        <form className="flex flex-col gap-6 font-title" onSubmit={handleSubmit}>
             <span onClick={() => setScreen("home")} className="mb-4 flex items-center gap-1 text-sm text-admintitle font-body font-semibold cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left">
                     <path d="m12 19-7-7 7-7"></path>
@@ -108,35 +195,43 @@ export default function GameAddForm({ setScreen }: Props) {
 
             <div>
                 <label className="text-admintitle">Title</label>
-                <input placeholder="Enter game title..." className="input-style" />
+                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter game title..." className="input-style" />
             </div>
 
             <div>
                 <label className="text-admintitle">Description</label>
-                <input placeholder="Enter game description..." className="input-style" />
+                <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter game description..." className="input-style" />
             </div>
 
             <div>
                 <label className="text-admintitle">Game Repository (Optional)</label>
-                <input placeholder="Enter game repository..." className="input-style" />
+                <input value={repository} onChange={(e) => setRepository(e.target.value)} placeholder="Enter game repository..." className="input-style" />
             </div>
 
             <div>
                 <label className="text-admintitle">Game Status</label>
-                <input placeholder="Enter the game status..." className="input-style" />
+                <input value={status} onChange={(e) => setStatus(e.target.value)} placeholder="Enter the game status..." className="input-style" />
             </div>
 
             <div>
                 <label className="text-admintitle">Game Type (Optional)</label>
-                <input placeholder="Enter game type..." className="input-style" />
+                <input value={typeVal} onChange={(e) => setTypeVal(e.target.value)} placeholder="Enter game type..." className="input-style" />
             </div>
 
             <div>
                 <label className="text-admintitle">Game Tags</label>
                 <div className="dropdown-input flex items-center" onClick={() => setTagDropdownOpen(!tagDropdownOpen)}>
                     <div id="tag-container">
-                        <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
-                            <span>Test</span>
+                        <div className="flex items-center gap-2">
+                            {selectedTags.length ? (
+                                selectedTags.map((t) => (
+                                    <div key={t} className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
+                                        <span>{t}</span>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-sm text-gray-500">No tags</div>
+                            )}
                         </div>
                     </div>
 
@@ -147,9 +242,62 @@ export default function GameAddForm({ setScreen }: Props) {
 
                 {tagDropdownOpen && (
                     <div className="bg-white rounded-xl shadow-lg mt-2 p-3 flex flex-col gap-2">
-                        {tagDropdownData.map((data) => (
-                            <p key={data} className="hover:bg-gray-100 p-1 cursor-pointer">{data}</p>
-                        ))}
+                        {tagDropdownData.length ? (
+                            tagDropdownData.map((data) => (
+                                <p key={data} onClick={() => { if (!selectedTags.includes(data)) setSelectedTags((p) => [...p, data]); setTagDropdownOpen(false); }} className="hover:bg-gray-100 p-1 cursor-pointer">{data}</p>
+                            ))
+                        ) : (
+                            <div className="text-sm text-gray-500">No tags available</div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <label className="text-admintitle">Game Platforms</label>
+
+                <div className="dropdown-input flex items-center" onClick={() => setPlatformDropdownOpen(!platformDropdownOpen)}>
+                    <div id="platform-container" className="flex gap-2">
+                        {platforms.length ? (
+                            platforms.map((p) => (
+                                <div key={p} className="flex items-center gap-1 px-2 py-1 text-sm rounded-xl bg-admintitle text-white">
+                                    <span>{p}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-sm text-gray-500">No platforms</div>
+                        )}
+                    </div>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`ml-auto transition ${platformDropdownOpen ? "rotate-180" : ""}`}>
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                {platformDropdownOpen && (
+                    <div className="bg-white rounded-xl shadow-lg mt-2 p-3 flex flex-col gap-2">
+                        <input
+                            value={platformSearch}
+                            onChange={(e) => setPlatformSearch(e.target.value)}
+                            placeholder="Search or type to add platform..."
+                            className="input-style"
+                        />
+
+                        <div className="flex flex-col max-h-40 overflow-auto">
+                            {platformDropdownData.length ? (
+                                platformDropdownData
+                                    .filter((q) => q.toLowerCase().includes(platformSearch.toLowerCase()))
+                                    .map((data) => (
+                                        <p key={data} onClick={() => addPlatform(data)} className="hover:bg-gray-100 p-1 cursor-pointer">{data}</p>
+                                    ))
+                            ) : (
+                                <div className="text-sm text-gray-500">No platforms available</div>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button type="button" onClick={() => addPlatform()} className="btn-primary">Add</button>
+                        </div>
                     </div>
                 )}
             </div>
@@ -223,7 +371,7 @@ export default function GameAddForm({ setScreen }: Props) {
                 <div className="flex gap-4 w-full">
                     <input value={version} onChange={(e) => setVersion(e.target.value)} placeholder="Version" className="input-style" />
                     <input value={date} onChange={(e) => setDate(e.target.value)} placeholder="Date" className="input-style" />
-                    <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="input-style" />
+                    <input value={clDescription} onChange={(e) => setClDescription(e.target.value)} placeholder="Description" className="input-style" />
                 </div>
 
                 <button type="button" onClick={addChangelog} className="flex items-center justify-center w-10 h-10 rounded-lg bg-admintitle text-white hover:opacity-80 transition">
@@ -252,7 +400,7 @@ export default function GameAddForm({ setScreen }: Props) {
                 })}
             </div>
 
-            <button className="btn-primary">ADD</button>
+            <button type="submit" className="btn-primary" disabled={loading}>{loading ? "Adding..." : "ADD"}</button>
         </form>
     );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import ListItem from "../../ListItem";
 import { Game } from "@/types/game";
+import { TagAndPlatform } from "@/types/tag_platform";
 
 type Props = {
     setScreen: (screen: string) => void;
@@ -20,12 +21,38 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
     const [typeVal, setTypeVal] = useState<string>(gameData.type || "");
 
     const [selectedTags, setSelectedTags] = useState<string[]>(gameData.tags || []);
-    const [tagDropdownData] = useState<string[]>([...new Set([...(gameData.tags || []), "Test 1", "Test 2", "Test 3"]) ]);
+    const [tagDropdownData, setTagDropdownData] = useState<string[]>([...(gameData.tags || [])]);
 
     const [platforms, setPlatforms] = useState<string[]>(gameData.platforms || []);
     const [platformDropdownOpen, setPlatformDropdownOpen] = useState<boolean>(false);
-    const [platformDropdownData] = useState<string[]>([...new Set([...(gameData.platforms || []), "PC", "Web", "Android", "iOS"]) ]);
+    const [platformDropdownData, setPlatformDropdownData] = useState<string[]>([...(gameData.platforms || [])]);
     const [platformSearch, setPlatformSearch] = useState<string>("");
+
+    
+
+    useEffect(() => {
+        const fetchLists = async () => {
+            try {
+                const t = await fetch(`${API_BASE}/tag/`);
+                if (t.ok) {
+                    const tags = await t.json();
+                    const names = Array.isArray(tags) ? tags.map((x: TagAndPlatform) => x.name) : [];
+                    setTagDropdownData(Array.from(new Set([...(gameData.tags || []), ...names])));
+                }
+
+                const p = await fetch(`${API_BASE}/platform/`);
+                if (p.ok) {
+                    const plats = await p.json();
+                    const names = Array.isArray(plats) ? plats.map((x: TagAndPlatform) => x.name) : [];
+                    setPlatformDropdownData(Array.from(new Set([...(gameData.platforms || []), ...names])));
+                }
+            } catch (err) {
+
+            }
+        };
+
+        fetchLists();
+    }, [gameData.tags, gameData.platforms]);
 
     const [startDate, setStartDate] = useState<string>(gameData.start_date || "");
     const [releaseDate, setReleaseDate] = useState<string>(gameData.release_date || "");
@@ -37,9 +64,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         description: c.description,
     }));
 
-    const [changelogLst, setChangelogLst] = useState(initialChangelogs.length ? initialChangelogs : [
-        { version: "1.0.0", date: "JAN 26, 2026", description: "All the main feature is finished, Published the demo." },
-    ]);
+    const [changelogLst, setChangelogLst] = useState(initialChangelogs);
 
     const [version, setVersion] = useState("");
     const [clDate, setClDate] = useState("");
@@ -53,10 +78,10 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
 
     const [newVideos, setNewVideos] = useState<File[] | null>(null);
     const [newVideoPreviews, setNewVideoPreviews] = useState<string[]>([]);
-    const [newVideoPosters, setNewVideoPosters] = useState<string[]>([]);
 
     const [photosToDelete, setPhotosToDelete] = useState<string[]>([]);
     const [videosToDelete, setVideosToDelete] = useState<string[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const addChangelog = () => {
         if (!version || !clDate || !clDescription) return;
@@ -153,9 +178,65 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         setVideosToDelete((prev) => (prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]));
     };
 
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+
+    const toAbsolute = (src?: string | null) => {
+        if (!src) return "";
+        if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("//")) return src;
+        return `${API_BASE}${src.startsWith("/") ? "" : "/"}${src}`;
+    };
+
+    const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        setLoading(true);
+
+        const bodyObj = {
+            title,
+            description,
+            type: typeVal,
+            start_date: startDate || null,
+            release_date: releaseDate || null,
+            repository_link: repository,
+            status,
+            tags: selectedTags,
+            platforms: platforms,
+            changelogs: changelogLst,
+        };
+
+        const form = new FormData();
+        form.append("body", JSON.stringify(bodyObj));
+
+        if (newCoverFile) form.append("cover_img", newCoverFile);
+        if (newPhotos) newPhotos.forEach((f) => form.append("photos", f));
+        if (newVideos) newVideos.forEach((f) => form.append("videos", f));
+
+        if (photosToDelete.length) form.append("photos_to_delete", photosToDelete.join(","));
+        if (videosToDelete.length) form.append("videos_to_delete", videosToDelete.join(","));
+
+        try {
+            const res = await fetch(`${API_BASE}/games/${gameData.id}`, {
+                method: "PUT",
+                body: form,
+            });
+
+            if (res.ok) {
+                setScreen("home");
+                return;
+            } else {
+                const text = await res.text();
+                alert("Failed to update game: " + text);
+            }
+        } catch (err) {
+            alert("Network error: " + String(err));
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
-        <form className="flex flex-col gap-6 font-title">
+        <form className="flex flex-col gap-6 font-title" onSubmit={handleUpdate}>
             <span onClick={() => setScreen("home")} className="mb-4 flex items-center gap-1 text-sm text-admintitle font-body font-semibold cursor-pointer">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -396,14 +477,14 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                 {/* existing cover from backend */}
                 {gameData.cover_img_path && !newCoverPreview && (
                     <div className="mt-2">
-                        <Image src={gameData.cover_img_path} alt="cover" width={160} height={160} className="object-cover rounded" />
+                        <Image src={toAbsolute(gameData.cover_img_path)} unoptimized alt="cover" width={160} height={160} className="object-cover rounded" />
                     </div>
                 )}
 
                 {/* new cover preview */}
                 {newCoverPreview && (
                     <div className="mt-2">
-                        <Image src={newCoverPreview} alt="new cover" width={160} height={160} className="object-cover rounded" />
+                        <Image src={newCoverPreview} unoptimized alt="new cover" width={160} height={160} className="object-cover rounded" />
                     </div>
                 )}
             </div>
@@ -424,7 +505,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     <div className="mt-2 flex gap-2 flex-wrap">
                         {gameData.photos.map((p) => (
                             <div key={p} className={`relative ${photosToDelete.includes(p) ? "opacity-50" : ""}`}>
-                                <Image src={p} alt="existing-photo" width={112} height={112} className="object-cover rounded" />
+                                <Image src={toAbsolute(p)} unoptimized alt="existing-photo" width={112} height={112} className="object-cover rounded" />
                                 <button
                                     type="button"
                                     onClick={() => togglePhotoDelete(p)}
@@ -443,7 +524,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     <div className="mt-4 flex gap-2 flex-wrap">
                         {newPhotoPreviews.map((src, i) => (
                             <div key={src} className="relative">
-                                <Image src={src} alt={`new-photo-${i}`} width={112} height={112} className="object-cover rounded" />
+                                <Image src={src} unoptimized alt={`new-photo-${i}`} width={112} height={112} className="object-cover rounded" />
                                 <button
                                     type="button"
                                     onClick={() => removeNewPhotoAt(i)}
@@ -571,8 +652,8 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
 
             </div>
 
-            <button className="btn-primary">
-                UPDATE
+            <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? "Saving..." : "UPDATE"}
             </button>
 
         </form>
