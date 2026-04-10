@@ -23,7 +23,7 @@ def create_focus(body: FocusCreate, db: Session = Depends(get_db)):
     }
 
 
-@router.delete("/")
+@router.delete("/{remove_id}")
 def delete_focus(remove_id: int, db: Session = Depends(get_db)):
     focus = db.query(OwnerFocus).filter(OwnerFocus.id == remove_id).first()
 

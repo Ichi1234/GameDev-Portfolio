@@ -8,13 +8,12 @@ class Game(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
     description = Column(String)
-    download_path = Column(String)
+    download_link = Column(String)
     cover_img_path = Column(String)
     type = Column(String)
     start_date = Column(Date)
     release_date = Column(Date)
     repository_link = Column(String)
-    status = Column(String)
 
 
 class GameTag(Base):

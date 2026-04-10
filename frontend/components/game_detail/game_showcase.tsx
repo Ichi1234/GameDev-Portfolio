@@ -9,6 +9,13 @@ type Props = {
 };
 
 export default function GameShowcase({ game }: Props) {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+
+  const toAbsolute = (src?: string) => {
+    if (!src) return "";
+    if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("//")) return src;
+    return `${API_BASE}${src.startsWith("/") ? "" : "/"}${src}`;
+  };
   const media = [
     ...(game?.videos?.map((v) => ({ type: "video", src: v })) || []),
     ...(game?.photos?.map((p) => ({ type: "image", src: p })) || []),
@@ -17,6 +24,16 @@ export default function GameShowcase({ game }: Props) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selected = media[selectedIndex];
   const hasMedia = media.length > 0;
+
+  const getMimeType = (src?: string) => {
+    if (!src) return undefined;
+    const lower = src.split("?")[0].toLowerCase();
+    if (lower.endsWith(".mp4") || lower.endsWith(".m4v")) return "video/mp4";
+    if (lower.endsWith(".webm")) return "video/webm";
+    if (lower.endsWith(".ogv") || lower.endsWith(".ogg")) return "video/ogg";
+    if (lower.endsWith(".mov")) return "video/quicktime";
+    return undefined;
+  };
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -31,15 +48,22 @@ export default function GameShowcase({ game }: Props) {
           <div className="relative w-full max-w-4xl aspect-video rounded-xl overflow-hidden border border-[#332e2b]">
             {selected?.type === "video" ? (
               <video
-                src={selected.src}
+                key={selected?.src}
                 controls
+                playsInline
+                preload="metadata"
+                crossOrigin="anonymous"
                 className="w-full h-full object-cover"
-              />
+              >
+                <source src={selected.src} type={getMimeType(selected.src)} />
+                Your browser does not support the video tag.
+              </video>
             ) : (
               <Image
                 src={selected.src}
                 alt="preview"
                 fill
+                unoptimized
                 className="object-cover"
               />
             )}
@@ -59,9 +83,14 @@ export default function GameShowcase({ game }: Props) {
                 {item.type === "video" ? (
                   <>
                     <video
-                      src={item.src}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      crossOrigin="anonymous"
                       className="w-full h-full object-cover"
-                    />
+                    >
+                        <source src={toAbsolute(item.src)} type={getMimeType(item.src)} />
+                    </video>
 
                     {/* ▶ Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition">
@@ -74,9 +103,10 @@ export default function GameShowcase({ game }: Props) {
                   </>
                 ) : (
                   <Image
-                    src={item.src}
+                    src={toAbsolute(item.src)}
                     alt="game image"
                     fill
+                    unoptimized
                     className="object-cover"
                   />
                 )}

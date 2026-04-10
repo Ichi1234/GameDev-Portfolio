@@ -14,7 +14,7 @@ export default function GameHeader({ game }: Props) {
     <div className="flex flex-col gap-2">
       
       {/* Back */}
-      <div className="flex items-center gap-x-2 text-sm mb-2">
+      <Link href="/#games" className="flex items-center gap-x-2 text-sm mb-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -31,9 +31,9 @@ export default function GameHeader({ game }: Props) {
           <path d="M19 12H5"></path>
         </svg>
 
-        <Link href="/#games">Back to Games</Link>
-      </div>
-
+        Back to Games
+      </Link>
+      
       {/* Type */}
       <div className="w-fit px-3 py-1 rounded-sm text-sm bg-black border border-primary/40 text-primary uppercase">
         {game.type}

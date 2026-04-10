@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import ListItem from "../ListItem";
 
-export default function SkillForm() {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+export default function SkillForm() {
     const [skillData, setSkillData] = useState<{ id: number; name: string; description?: string }[]>([]);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetch(`${API_BASE}/skill/`)
@@ -21,6 +22,7 @@ export default function SkillForm() {
 
 
     const addSkill = () => {
+        setLoading(true);
         fetch(`${API_BASE}/skill/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -42,7 +44,8 @@ export default function SkillForm() {
                 setSkillData([...skillData, newSkill]);
                 setName("");
                 setDescription("");
-            });
+            })
+            .finally(() => setLoading(false));
 
     }
 
@@ -79,8 +82,8 @@ export default function SkillForm() {
                 />                
             </div>
 
-            <button type="button" onClick={addSkill} className="btn-primary">
-                ADD
+            <button type="button" onClick={addSkill} className="btn-primary" disabled={loading}>
+                {loading ? "Adding..." : "ADD"}
             </button>
 
             <h2 className="font-title font-bold text-admintitle text-xl">Skill List</h2>

@@ -2,3 +2,4 @@
 NEXT_PUBLIC_JOB_CONTACT_EMAILS = [john@gmail.com, ricardo@gmail.com, pk@gmail.com, titykung@gmail.com] 
 # your main email for contact in the main page
 NEXT_PUBLIC_MAIN_EMAIL = ""
+NEXT_PUBLIC_API_BASE=http://localhost:8000

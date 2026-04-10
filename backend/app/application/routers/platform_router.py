@@ -19,11 +19,11 @@ def create_tag(body: GamePlatformCreate, db: Session = Depends(get_db)):
 
     return {
         "id": tag.id,
-        "name" : tag.skill,
+        "name" : tag.name,
     }
 
 
-@router.delete("/")
+@router.delete("/{remove_id}")
 def delete_tag(remove_id: int, db: Session = Depends(get_db)):
     tag = db.query(Platform).filter(Platform.id == remove_id).first()
 
@@ -32,7 +32,7 @@ def delete_tag(remove_id: int, db: Session = Depends(get_db)):
 
     response = {
         "id": tag.id,
-        "name": tag.focus
+        "name": tag.name
     }
 
     db.delete(tag)

@@ -2,6 +2,7 @@
 
 import { Game } from "@/types/game";
 import Chip from "@/components/chip";
+import Link from "next/link";
 
 type Props = {
   game: Game;
@@ -13,9 +14,15 @@ export default function GameInfo({ game }: Props) {
       
       {/* Buttons */}
       <div className="flex gap-x-4">
-        <button className="flex items-center gap-x-2 px-6 py-3 bg-primary text-black text-sm font-semibold rounded-lg">
-          DOWNLOAD
-        </button>
+        {game.download_link ? (
+          <a href={game.download_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-2 px-6 py-3 bg-primary text-black text-sm font-semibold rounded-lg">
+            DOWNLOAD
+          </a>
+        ) : (
+          <button disabled aria-disabled className="flex items-center gap-x-2 px-6 py-3 bg-primary/70 text-black text-sm font-semibold rounded-lg cursor-not-allowed opacity-50">
+            DOWNLOAD
+          </button>
+        )}
 
         <button className="flex items-center gap-x-2 px-6 py-3 border border-primary/40 bg-[#272321] text-white text-sm font-semibold rounded-lg">
           FOLLOW

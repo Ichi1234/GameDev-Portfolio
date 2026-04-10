@@ -12,12 +12,11 @@ class ChangelogItem(BaseModel):
 class GameCreate(BaseModel):
     title: str
     description: str
-    game_file: Optional[str] = None
+    download_link: Optional[str] = None
     cover_img: Optional[str] = None
     start_date: Optional[datetime.date] = None
     release_date: Optional[datetime.date] = None
     repository_link: Optional[str] = None
-    status: Optional[str] = None
     type: Optional[str] = None
     tags: List[str] = []
     platforms: List[str] = []
@@ -28,6 +27,7 @@ class GameCreate(BaseModel):
 
 class GameTagCreate(BaseModel):
     name : str
+
 
 class GamePlatformCreate(BaseModel):
     name : str
