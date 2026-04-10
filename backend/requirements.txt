@@ -3,3 +3,4 @@ fastapi
 sqlalchemy
 aiosqlite
 pydantic
+python-multipart
