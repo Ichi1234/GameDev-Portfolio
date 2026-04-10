@@ -28,5 +28,6 @@ class GameCreate(BaseModel):
 class GameTagCreate(BaseModel):
     name : str
 
+
 class GamePlatformCreate(BaseModel):
     name : str
