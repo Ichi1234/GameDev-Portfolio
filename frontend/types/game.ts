@@ -4,7 +4,7 @@ export type Game = {
   id: number
   title: string
   description: string
-  download_path: string
+  download_link: string
   cover_img_path: string
   type: string
   start_date: string
@@ -23,7 +23,7 @@ export type Game = {
 export type GameInput = {
   title?: string
   description?: string
-  download_path?: string
+  download_link?: string
   cover_img_path?: string
   type?: string
   start_date?: string | null

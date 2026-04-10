@@ -12,7 +12,7 @@ class ChangelogItem(BaseModel):
 class GameCreate(BaseModel):
     title: str
     description: str
-    game_file: Optional[str] = None
+    download_link: Optional[str] = None
     cover_img: Optional[str] = None
     start_date: Optional[datetime.date] = None
     release_date: Optional[datetime.date] = None

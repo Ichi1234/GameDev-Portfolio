@@ -27,6 +27,7 @@ export default function GameAddForm({ setScreen }: Props) {
     const [description, setDescription] = useState("");
     const [repository, setRepository] = useState("");
     const [typeVal, setTypeVal] = useState("");
+    const [downloadLink, setDownloadLink] = useState("");
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [platforms, setPlatforms] = useState<string[]>([]);
 
@@ -157,6 +158,7 @@ export default function GameAddForm({ setScreen }: Props) {
             start_date: null,
             release_date: null,
             repository_link: repository,
+            download_link: downloadLink,
             tags: selectedTags,
             platforms: platforms,
             changelogs: changelogLst,
@@ -331,8 +333,14 @@ export default function GameAddForm({ setScreen }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Game File (Optional)</label>
-                <input placeholder="Upload your game..." className="file-input" type="file" />
+                <label className="text-admintitle">Download Link (Optional)</label>
+                <input
+                    value={downloadLink}
+                    onChange={(e) => setDownloadLink(e.target.value)}
+                    placeholder="https://example.com/download"
+                    className="input-style"
+                    type="text"
+                />
             </div>
 
             <div>

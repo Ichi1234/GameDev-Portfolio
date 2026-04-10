@@ -57,7 +57,7 @@ def get_game(db: Session = Depends(get_db)):
                 "id": g.id,
                 "title": g.title,
                 "description": g.description,
-                "download_path": g.download_path,
+                "download_link": g.download_link,
                 "cover_img_path": g.cover_img_path,
                 "start_date": g.start_date.isoformat() if g.start_date else None,
                 "release_date": g.release_date.isoformat() if g.release_date else None,
@@ -77,7 +77,6 @@ def get_game(db: Session = Depends(get_db)):
 @router.post("/")
 def create_game(
     body: str = Form(...),
-    game_file: Optional[UploadFile] = File(None),
     cover_img: Optional[UploadFile] = File(None),
     photos: List[UploadFile] = File(default=[]),
     videos: List[UploadFile] = File(default=[]),
@@ -93,7 +92,7 @@ def create_game(
     game = Game(
         title=body.title,
         description=body.description,
-        download_path=None,
+        download_link=body.download_link,
         cover_img_path=None,
         type=body.type,
         start_date=body.start_date,
@@ -120,12 +119,6 @@ def create_game(
         except Exception:
             return None
 
-    if game_file:
-        saved_game = _save_upload_file(game_file)
-        if saved_game:
-            game.download_path = saved_game
-            db.commit()
-            db.refresh(game)
 
     for name in body.tags or []:
         tag = db.query(Tag).filter(Tag.name == name).first()
@@ -215,9 +208,9 @@ def delete_game(remove_id: int, db: Session = Depends(get_db)):
         pass
 
     try:
-        download_path = _resolve(game.download_path)
-        if download_path and download_path.exists():
-            download_path.unlink()
+        download_link = _resolve(game.download_link)
+        if download_link and download_link.exists():
+            download_link.unlink()
     except Exception:
         pass
 
@@ -269,7 +262,7 @@ def delete_game(remove_id: int, db: Session = Depends(get_db)):
             pass
 
     safe_name = None
-    candidates = [game.cover_img_path, game.download_path]
+    candidates = [game.cover_img_path, game.download_link]
     candidates += [p.file_path for p in photos]
     candidates += [v.file_path for v in videos]
     for c in candidates:
@@ -298,7 +291,6 @@ def delete_game(remove_id: int, db: Session = Depends(get_db)):
 def update_game(
     game_id: int,
     body: str = Form(...),
-    game_file: Optional[UploadFile] = File(None),
     cover_img: Optional[UploadFile] = File(None),
     photos: List[UploadFile] = File(default=[]),
     videos: List[UploadFile] = File(default=[]),
@@ -337,7 +329,7 @@ def update_game(
         return path.replace(f"/storage/games/{old}/", f"/storage/games/{new}/")
 
     if old_title and old_title != new_title:
-        game.download_path = _replace_storage_path(game.download_path, old_safe, new_safe)
+        game.download_link = _replace_storage_path(game.download_link, old_safe, new_safe)
         game.cover_img_path = _replace_storage_path(game.cover_img_path, old_safe, new_safe)
 
         photos = db.query(GamePhoto).filter(GamePhoto.game_id == game.id).all()
@@ -372,7 +364,6 @@ def update_game(
 
     safe_name = new_safe
     target_dir = STORAGE_BASE / safe_name
-    os.makedirs(target_dir, exist_ok=True)
 
     def _save_upload_file(upload: UploadFile) -> Optional[str]:
         if not upload:
@@ -420,22 +411,6 @@ def update_game(
                         db.delete(v)
                 except Exception:
                     pass
-
-    if game_file:
-        if game.download_path:
-            try:
-                rel = game.download_path.replace("/storage/games/", "")
-                old_path = STORAGE_BASE / rel
-                if old_path.exists():
-                    old_path.unlink()
-            except Exception:
-                pass
-
-        saved_game = _save_upload_file(game_file)
-        if saved_game:
-            game.download_path = saved_game
-            db.commit()
-            db.refresh(game)
 
     for name in body.tags or []:
         tag = db.query(Tag).filter(Tag.name == name).first()
