@@ -26,7 +26,6 @@ export default function GameAddForm({ setScreen }: Props) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [repository, setRepository] = useState("");
-    const [status, setStatus] = useState("");
     const [typeVal, setTypeVal] = useState("");
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [platforms, setPlatforms] = useState<string[]>([]);
@@ -158,7 +157,6 @@ export default function GameAddForm({ setScreen }: Props) {
             start_date: null,
             release_date: null,
             repository_link: repository,
-            status: status,
             tags: selectedTags,
             platforms: platforms,
             changelogs: changelogLst,
@@ -214,11 +212,6 @@ export default function GameAddForm({ setScreen }: Props) {
             <div>
                 <label className="text-admintitle">Game Repository (Optional)</label>
                 <input value={repository} onChange={(e) => setRepository(e.target.value)} placeholder="Enter game repository..." className="input-style" />
-            </div>
-
-            <div>
-                <label className="text-admintitle">Game Status</label>
-                <input value={status} onChange={(e) => setStatus(e.target.value)} placeholder="Enter the game status..." className="input-style" />
             </div>
 
             <div>

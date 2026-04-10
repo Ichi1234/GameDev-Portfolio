@@ -62,7 +62,6 @@ def get_game(db: Session = Depends(get_db)):
                 "start_date": g.start_date.isoformat() if g.start_date else None,
                 "release_date": g.release_date.isoformat() if g.release_date else None,
                 "repository_link": g.repository_link,
-                "status": g.status,
                 "type": g.type,
                 "tags": tags,
                 "platforms": platforms,
@@ -100,7 +99,6 @@ def create_game(
         start_date=body.start_date,
         release_date=body.release_date,
         repository_link=body.repository_link,
-        status=body.status,
     )
 
     db.add(game)
@@ -328,7 +326,6 @@ def update_game(
     game.start_date = body.start_date
     game.release_date = body.release_date
     game.repository_link = body.repository_link
-    game.status = body.status
 
     new_title = body.title or ""
     old_safe = old_title.replace(" ", "_").lower() if old_title else None

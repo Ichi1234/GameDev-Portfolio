@@ -9,7 +9,6 @@ export type Game = {
   type: string
   start_date: string
   release_date: string
-  status: string
   repository_link? : string
   
   tags: string[]
@@ -29,7 +28,6 @@ export type GameInput = {
   type?: string
   start_date?: string | null
   release_date?: string | null
-  status?: string
   repository_link?: string
 
   tags?: string[]

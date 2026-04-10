@@ -17,7 +17,6 @@ class GameCreate(BaseModel):
     start_date: Optional[datetime.date] = None
     release_date: Optional[datetime.date] = None
     repository_link: Optional[str] = None
-    status: Optional[str] = None
     type: Optional[str] = None
     tags: List[str] = []
     platforms: List[str] = []

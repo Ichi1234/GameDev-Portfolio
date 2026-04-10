@@ -17,7 +17,6 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         typeof gameData.description === "string" ? gameData.description : String(gameData.description || "")
     );
     const [repository, setRepository] = useState<string>(gameData.repository_link || "");
-    const [status, setStatus] = useState<string>(gameData.status || "");
     const [typeVal, setTypeVal] = useState<string>(gameData.type || "");
 
     const [selectedTags, setSelectedTags] = useState<string[]>(gameData.tags || []);
@@ -212,7 +211,6 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             start_date: startDate && startDate.length ? startDate : null,
             release_date: releaseDate && releaseDate.length ? releaseDate : null,
             repository_link: repository,
-            status,
             tags: selectedTags,
             platforms: platforms,
         };
@@ -298,16 +296,6 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                     value={repository}
                     onChange={(e) => setRepository(e.target.value)}
                     placeholder="Enter game repository..."
-                    className="input-style"
-                />
-            </div>
-
-            <div>
-                <label className="text-admintitle">Game Status</label>
-                <input
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    placeholder="Enter the game status..."
                     className="input-style"
                 />
             </div>

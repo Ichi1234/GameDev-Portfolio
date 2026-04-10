@@ -14,7 +14,6 @@ class Game(Base):
     start_date = Column(Date)
     release_date = Column(Date)
     repository_link = Column(String)
-    status = Column(String)
 
 
 class GameTag(Base):
