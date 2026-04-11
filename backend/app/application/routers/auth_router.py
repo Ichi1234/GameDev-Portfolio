@@ -13,6 +13,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 def google_auth(body: dict, db: Session = Depends(get_db)):
     token = body.get("token")
     role_name = body.get("role")
+    username_from_body = body.get("username")
     if not token:
         raise HTTPException(status_code=400, detail="token required")
 
@@ -31,10 +32,11 @@ def google_auth(body: dict, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
+        username_val = username_from_body or user_info.get("name")
         user = User(
             email=email,
             google_id=google_id,
-            username=user_info.get("name"),
+            username=username_val,
         )
         if role_name:
             role_obj = db.query(Role).filter(Role.name == role_name).first()
@@ -56,6 +58,12 @@ def google_auth(body: dict, db: Session = Depends(get_db)):
                 db.commit()
                 db.refresh(role_obj)
             user.role_id = role_obj.id
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        if username_from_body and not user.username:
+            user.username = username_from_body
             db.add(user)
             db.commit()
             db.refresh(user)

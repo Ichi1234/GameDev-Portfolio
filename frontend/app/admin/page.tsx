@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainForm from "@/components/admin_form/main_form";
+import { useAuth } from "@/context/auth_provider";
 import GameForm from "@/components/admin_form/game_form";
 import SkillForm from "@/components/admin_form/skill_form";
 import FocusForm from "@/components/admin_form/focus_form";
@@ -11,6 +12,15 @@ import TagPlatForm from "@/components/admin_form/tag_plat_form";
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState("main");
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (!user || user.role !== 'developer') {
+                window.location.href = '/';
+            }
+        }
+    }, [user]);
 
     const tabs = [
         { key: "game", label: "Game" },
