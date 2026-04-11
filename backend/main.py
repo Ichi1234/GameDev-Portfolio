@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.app.data.database import engine, Base
+from backend.app.data.database import engine, Base, seed_default_roles
 from backend.app.application.routers import role_router, test_router, profile_router, tag_router, platform_router, game_router, skill_router, focus_router, auth_router
 
 app = FastAPI()
@@ -27,6 +27,8 @@ if storage_dir.exists():
 	app.mount("/storage", StaticFiles(directory=str(storage_dir)), name="storage")
 
 Base.metadata.create_all(bind=engine)
+
+seed_default_roles()
 
 app.include_router(role_router.role_router)
 app.include_router(test_router.router)
