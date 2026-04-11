@@ -35,26 +35,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const payload = parseJwt(token);
-      if (!payload) return;
+    const validate = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
 
-      const role = payload.role as string | undefined;
+        const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+        const res = await fetch(`${API_BASE}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      const u: User = {
-        id: Number(payload.user_id) || 0,
-        username: (payload.email as string)?.split('@')[0] || (payload.username as string) || '',
-        google_id: (payload.google_id as string) || null,
-        role: role || 'visitor',
-      };
+        if (!res.ok) {
+          localStorage.removeItem('token');
+          setUser(null);
+          return;
+        }
 
+        const data = await res.json();
+        const u: User = {
+          id: data.id,
+          username: data.username || (data.email || '').split('@')[0] || '',
+          google_id: null,
+          role: data.role || 'visitor',
+        };
 
-      setTimeout(() => setUser(u), 0);
-    } catch {
-      // ignore parse errors
-    }
+        setUser(u);
+      } catch (err) {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+          const payload = parseJwt(token);
+          if (!payload) return;
+
+          const role = payload.role as string | undefined;
+
+          const u: User = {
+            id: Number(payload.user_id) || 0,
+            username: (payload.email as string)?.split('@')[0] || (payload.username as string) || '',
+            google_id: (payload.google_id as string) || null,
+            role: role || 'visitor',
+          };
+
+          setUser(u);
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    validate();
   }, []);
 
   return (

@@ -5,6 +5,7 @@ import os
 from backend.app.data.database import get_db
 from backend.app.data.models.user_model import User, Role
 from backend.app.application.security import verify_google_token, create_access_token
+from backend.app.application.security import get_current_user
 
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -112,4 +113,28 @@ def google_auth(body: dict, db: Session = Depends(get_db)):
             "email": user.email,
             "username": user.username,
         },
+    }
+
+
+
+@auth_router.get("/me")
+def me(payload=Depends(get_current_user), db: Session = Depends(get_db)):
+    """Return current user info from token; raises 401 if token invalid/expired."""
+    user_id = payload.get("user_id") if isinstance(payload, dict) else None
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    role_obj = None
+    if user.role_id:
+        role_obj = db.query(Role).filter(Role.id == user.role_id).first()
+
+    return {
+        "id": user.id,
+        "email": user.email,
+        "username": user.username,
+        "role": role_obj.name if role_obj else None,
     }
