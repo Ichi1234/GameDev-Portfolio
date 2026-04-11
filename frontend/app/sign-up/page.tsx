@@ -22,7 +22,7 @@ export default function SignUp() {
                 
                 <span className="text-sm text-textsubcolor">Already have an account? <a href="https://youtu.be/CZKex48fp5Q?si=ZTpqDECTkV-td2sZ" className="text-primary">Sign in with Google</a></span>
             </form>
-
+            
         </main>
     );
 }
