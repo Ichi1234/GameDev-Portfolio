@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.profile_model import OwnerFocus
 from backend.app.application.schemas.profile_schema import FocusCreate
+from backend.app.application.security import require_role
 
 router = APIRouter(prefix="/focus", tags=["Focus"])
 
 
 @router.post("/")
-def create_focus(body: FocusCreate, db: Session = Depends(get_db)):
+def create_focus(body: FocusCreate, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     focus = OwnerFocus(
         focus = body.name
     )
@@ -24,7 +25,7 @@ def create_focus(body: FocusCreate, db: Session = Depends(get_db)):
 
 
 @router.delete("/{remove_id}")
-def delete_focus(remove_id: int, db: Session = Depends(get_db)):
+def delete_focus(remove_id: int, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     focus = db.query(OwnerFocus).filter(OwnerFocus.id == remove_id).first()
 
     if not focus:

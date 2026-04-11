@@ -7,6 +7,7 @@ from typing import Optional, List
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
+from backend.app.application.security import require_role
 from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GamePhoto, GameVideo
 from backend.app.data.models.tag_platform_model import Tag, Platform
 from backend.app.application.schemas.game_schema import GameCreate
@@ -81,6 +82,7 @@ def create_game(
     photos: List[UploadFile] = File(default=[]),
     videos: List[UploadFile] = File(default=[]),
     db: Session = Depends(get_db),
+    _user=Depends(require_role('developer')),
 ):
     try:
         body_data = json.loads(body)
@@ -186,7 +188,7 @@ def create_game(
 
 
 @router.delete("/{remove_id}")
-def delete_game(remove_id: int, db: Session = Depends(get_db)):
+def delete_game(remove_id: int, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     game = db.query(Game).filter(Game.id == remove_id).first()
 
     if not game:
@@ -297,6 +299,7 @@ def update_game(
     photos_to_delete: Optional[str] = Form(None),
     videos_to_delete: Optional[str] = Form(None),
     db: Session = Depends(get_db),
+    _user=Depends(require_role('developer')),
 ):
     try:
         body_data = json.loads(body)
