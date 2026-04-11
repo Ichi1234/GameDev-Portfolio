@@ -415,6 +415,19 @@ def update_game(
                 except Exception:
                     pass
 
+    try:
+        new_tag_names = set(body.tags or [])
+        existing_gt_links = db.query(GameTag).filter(GameTag.game_id == game.id).all()
+        for gt in existing_gt_links:
+            tag = db.query(Tag).filter(Tag.id == gt.tag_id).first()
+            if tag and tag.name not in new_tag_names:
+                try:
+                    db.delete(gt)
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
     for name in body.tags or []:
         tag = db.query(Tag).filter(Tag.name == name).first()
         if not tag:
@@ -442,6 +455,19 @@ def update_game(
         if not existing_gp:
             gp = GamePlatform(game_id=game.id, platform_id=plat.id)
             db.add(gp)
+
+    try:
+        new_platform_names = set(body.platforms or [])
+        existing_gp_links = db.query(GamePlatform).filter(GamePlatform.game_id == game.id).all()
+        for gp in existing_gp_links:
+            plat = db.query(Platform).filter(Platform.id == gp.platform_id).first()
+            if plat and plat.name not in new_platform_names:
+                try:
+                    db.delete(gp)
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
     if cover_img:
         if game.cover_img_path:

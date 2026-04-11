@@ -5,11 +5,11 @@ export const MockGamesData: Game[] = [
     id: 1,
     title: "Raging Cacophony",
     description: "A 2D boss fight prototype inspired by Hollow Knight.<br/><br/>This project focuses on designing a responsive combat system and experimenting with a unique rage mechanic driven by real-time microphone input.",
-    download_link: "yes",
+    download_link: "https://github.com/Ichi1234/Raging-Cacophony/releases/tag/v0.9.0",
     cover_img_path: "/img/mockup/raging.png",
     start_date: "2026-01-17",
     release_date: "",
-    repository_link: "https://github.com/Ichi1234/GameDev-Portfolio",
+    repository_link: "https://github.com/Ichi1234/Raging-Cacophony",
     type: "Experimental Game",
     tags: ["2D", "Action", "Single Player"],
     platforms: ["PC"],
@@ -20,7 +20,7 @@ export const MockGamesData: Game[] = [
       {
       id: 1,
       game_id: 1,
-      version: "0.9",
+      version: "0.9.0",
       description: "All the main feature is finished, Published the demo.",
       date: "2026-01-26"
       },
