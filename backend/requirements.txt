@@ -4,3 +4,6 @@ sqlalchemy
 aiosqlite
 pydantic
 python-multipart
+python-jose[cryptography]
+google-auth
+requests

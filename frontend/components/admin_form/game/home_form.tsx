@@ -32,7 +32,11 @@ export default function GameHomeForm({ setScreen, setSelectedGame }: Props) {
     const handleRemove = async (gameID: number) => {
         if (!confirm("Delete this game?")) return;
         try {
-            const res = await fetch(`${API_BASE}/games/${gameID}`, { method: "DELETE" });
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const res = await fetch(`${API_BASE}/games/${gameID}`, { method: "DELETE", headers });
             if (res.ok) {
                 setGameLst((prev) => prev.filter((game) => game.id !== gameID));
             } else {
@@ -51,7 +55,7 @@ export default function GameHomeForm({ setScreen, setSelectedGame }: Props) {
 
     return (
         <div>
-            <button onClick={() => setScreen("add")} className="cursor-pointer transition hover:bg-white/70 ml-auto text-admintitle rounded-xl px-4 py-2 border-2 border-admintitle flex items-center gap-1">
+            <button onClick={() => setScreen("add")} className="cursor-pointer transition hover:bg-[#c9184a17] ml-auto text-admintitle rounded-xl px-4 py-2 border-2 border-admintitle flex items-center gap-1">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"

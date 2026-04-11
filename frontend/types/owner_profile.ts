@@ -2,7 +2,7 @@ import { CoreSkills } from "./core_skill"
 import { Focuses } from "./focus"
 
 export type OwnerProfile = {
-    portfolio_title: string,
+    name: string,
     main_quote: string,
     sub_quote: string,
     introduction: string,

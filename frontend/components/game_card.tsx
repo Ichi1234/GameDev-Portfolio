@@ -30,7 +30,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
             <div className="absolute top-3 left-3 px-2 sm:px-3 py-1 text-[0.55rem] sm:text-[0.65rem] lg:text-xs
             rounded-sm inline border border-primary/50 bg-cardbackground text-primary uppercase"
             >
-              { game.type }
+              { game.type || (game.tags?.[0] ? game.tags[0] + " GAME" : "GAME") }
             </div>
           </div>
           

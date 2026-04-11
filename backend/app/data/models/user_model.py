@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from backend.app.data.database import Base
 
 
@@ -13,6 +13,12 @@ class User(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String)
-    google_id = Column(String)
-    role_id = Column(Integer)
+    
+    email = Column(String, unique=True, index=True, nullable=False)
+
+    username = Column(String, nullable=True)
+    
+    google_id = Column(String, unique=True, nullable=True)
+    
+    role_id = Column(Integer, ForeignKey("roles.id"))
+    

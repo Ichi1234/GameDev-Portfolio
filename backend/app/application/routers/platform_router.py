@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.tag_platform_model import Platform
 from backend.app.application.schemas.game_schema import GamePlatformCreate
+from backend.app.application.security import require_role
 
 router = APIRouter(prefix="/platform", tags=["Platform"])
 
 
 @router.post("/")
-def create_tag(body: GamePlatformCreate, db: Session = Depends(get_db)):
+def create_platform(body: GamePlatformCreate, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     tag = Platform(
         name = body.name
     )
@@ -24,7 +25,7 @@ def create_tag(body: GamePlatformCreate, db: Session = Depends(get_db)):
 
 
 @router.delete("/{remove_id}")
-def delete_tag(remove_id: int, db: Session = Depends(get_db)):
+def delete_platform(remove_id: int, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     tag = db.query(Platform).filter(Platform.id == remove_id).first()
 
     if not tag:
@@ -42,7 +43,7 @@ def delete_tag(remove_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/")
-def get_focus(db: Session = Depends(get_db)):
+def get_platform(db: Session = Depends(get_db)):
     platforms = db.query(Platform).all()
 
     if not platforms:

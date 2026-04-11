@@ -12,7 +12,7 @@ type Props = {
 
 export default function ProfileProvider({ children }: Props) {
   const emptyProfile: OwnerProfile = {
-    portfolio_title: "",
+    name: "",
     main_quote: "",
     sub_quote: "",
     introduction: "",
@@ -26,7 +26,7 @@ export default function ProfileProvider({ children }: Props) {
 
   type ProfileResponse = {
     id?: number;
-    portfolio_title?: string;
+    name?: string;
     main_quote?: string;
     sub_quote?: string;
     introduction?: string;
@@ -72,7 +72,7 @@ export default function ProfileProvider({ children }: Props) {
           : [];
 
         const mapped: OwnerProfile = {
-          portfolio_title: data.portfolio_title ?? "",
+          name: data.name ?? "",
           main_quote: data.main_quote ?? "",
           sub_quote: data.sub_quote ?? "",
           introduction: data.introduction ?? "",

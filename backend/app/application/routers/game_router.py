@@ -7,6 +7,7 @@ from typing import Optional, List
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
+from backend.app.application.security import require_role
 from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GamePhoto, GameVideo
 from backend.app.data.models.tag_platform_model import Tag, Platform
 from backend.app.application.schemas.game_schema import GameCreate
@@ -81,6 +82,7 @@ def create_game(
     photos: List[UploadFile] = File(default=[]),
     videos: List[UploadFile] = File(default=[]),
     db: Session = Depends(get_db),
+    _user=Depends(require_role('developer')),
 ):
     try:
         body_data = json.loads(body)
@@ -186,7 +188,7 @@ def create_game(
 
 
 @router.delete("/{remove_id}")
-def delete_game(remove_id: int, db: Session = Depends(get_db)):
+def delete_game(remove_id: int, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     game = db.query(Game).filter(Game.id == remove_id).first()
 
     if not game:
@@ -297,6 +299,7 @@ def update_game(
     photos_to_delete: Optional[str] = Form(None),
     videos_to_delete: Optional[str] = Form(None),
     db: Session = Depends(get_db),
+    _user=Depends(require_role('developer')),
 ):
     try:
         body_data = json.loads(body)
@@ -412,6 +415,19 @@ def update_game(
                 except Exception:
                     pass
 
+    try:
+        new_tag_names = set(body.tags or [])
+        existing_gt_links = db.query(GameTag).filter(GameTag.game_id == game.id).all()
+        for gt in existing_gt_links:
+            tag = db.query(Tag).filter(Tag.id == gt.tag_id).first()
+            if tag and tag.name not in new_tag_names:
+                try:
+                    db.delete(gt)
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
     for name in body.tags or []:
         tag = db.query(Tag).filter(Tag.name == name).first()
         if not tag:
@@ -439,6 +455,19 @@ def update_game(
         if not existing_gp:
             gp = GamePlatform(game_id=game.id, platform_id=plat.id)
             db.add(gp)
+
+    try:
+        new_platform_names = set(body.platforms or [])
+        existing_gp_links = db.query(GamePlatform).filter(GamePlatform.game_id == game.id).all()
+        for gp in existing_gp_links:
+            plat = db.query(Platform).filter(Platform.id == gp.platform_id).first()
+            if plat and plat.name not in new_platform_names:
+                try:
+                    db.delete(gp)
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
     if cover_img:
         if game.cover_img_path:

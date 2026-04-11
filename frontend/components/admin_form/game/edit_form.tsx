@@ -230,8 +230,13 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
         if (videosToDelete.length) form.append("videos_to_delete", videosToDelete.join(","));
 
         try {
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const res = await fetch(`${API_BASE}/games/${gameData.id}`, {
                 method: "PUT",
+                headers,
                 body: form,
             });
 

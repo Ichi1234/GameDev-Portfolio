@@ -3,14 +3,15 @@ from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.profile_model import OwnerProfile, OwnerFocus, OwnerSkill
 from backend.app.application.schemas.profile_schema import ProfileCreate
+from backend.app.application.security import require_role
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
 
 @router.post("/")
-def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
+def create_profile(body: ProfileCreate, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     profile = OwnerProfile(
-        portfolio_title=body.portfolio_title,
+        name=body.name,
         main_quote=body.main_quote,
         sub_quote=body.sub_quote,
         introduction=body.introduction,
@@ -22,7 +23,7 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
     db.refresh(profile)
 
     return {
-        "portfolio_title": profile.portfolio_title,
+        "name": profile.name,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
@@ -30,13 +31,13 @@ def create_profile(body: ProfileCreate, db: Session = Depends(get_db)):
     }
 
 @router.put("/")
-def change_profile(body: ProfileCreate, db: Session = Depends(get_db)):
+def change_profile(body: ProfileCreate, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     profile = db.query(OwnerProfile).first()
 
     if not profile:
         return {"error": "Profile not found"}
 
-    profile.portfolio_title = body.portfolio_title
+    profile.name = body.name
     profile.main_quote = body.main_quote
     profile.sub_quote = body.sub_quote
     profile.introduction = body.introduction
@@ -46,7 +47,7 @@ def change_profile(body: ProfileCreate, db: Session = Depends(get_db)):
     db.refresh(profile)
 
     return {
-        "portfolio_title": profile.portfolio_title,
+        "name": profile.name,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
@@ -64,7 +65,7 @@ def get_profile(db: Session = Depends(get_db)):
         return {"error": "No profile found"}
 
     return {
-        "portfolio_title": profile.portfolio_title,
+        "name": profile.name,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,

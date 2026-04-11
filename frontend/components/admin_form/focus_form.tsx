@@ -14,9 +14,13 @@ export default function FocusForm() {
         const trimmed = name.trim();
         if (!trimmed) return;
         setLoading(true);
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: Record<string,string> = { "Content-Type": "application/json" };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         fetch(`${API_BASE}/focus/`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify({ name: trimmed }),
         })
             .then((res) => res.json())
@@ -34,7 +38,11 @@ export default function FocusForm() {
     }
 
     const handleRemove = (tagID : number) => {
-        fetch(`${API_BASE}/focus/${tagID}`, { method: "DELETE" })
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: Record<string,string> = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        fetch(`${API_BASE}/focus/${tagID}`, { method: "DELETE", headers })
             .then((res) => res.json())
             .then(() => {
                 setFocusData((prev) => prev.filter((tag) => tag.id !== tagID));

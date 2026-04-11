@@ -18,4 +18,20 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def seed_default_roles():
+    """Ensure default roles exist in the database: visitor, recruiter, developer."""
+    from backend.app.data.models.user_model import Role
+
+    db = SessionLocal()
+    try:
+        for name in ("visitor", "recruiter", "developer"):
+            exists = db.query(Role).filter(Role.name == name).first()
+            if not exists:
+                r = Role(name=name)
+                db.add(r)
+        db.commit()
+    finally:
+        db.close()
         

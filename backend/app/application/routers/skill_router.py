@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.data.models.profile_model import OwnerSkill
 from backend.app.application.schemas.profile_schema import SkillCreate
+from backend.app.application.security import require_role
 
 router = APIRouter(prefix="/skill", tags=["Skill"])
 
 
 @router.post("/")
-def create_skill(body: SkillCreate, db: Session = Depends(get_db)):
+def create_skill(body: SkillCreate, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     skill = OwnerSkill(
         skill = body.name,
         description = body.description
@@ -26,7 +27,7 @@ def create_skill(body: SkillCreate, db: Session = Depends(get_db)):
 
 
 @router.delete("/{remove_id}")
-def delete_skill(remove_id: int, db: Session = Depends(get_db)):
+def delete_skill(remove_id: int, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
     skill = db.query(OwnerSkill).filter(OwnerSkill.id == remove_id).first()
 
     if not skill:
