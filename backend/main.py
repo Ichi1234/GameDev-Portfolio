@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.data.database import engine, Base
-from backend.app.application.routers import test_router, user_router, profile_router, tag_router, platform_router, game_router, skill_router, focus_router
+from backend.app.application.routers import test_router, user_router, profile_router, tag_router, platform_router, game_router, skill_router, focus_router, auth_router
 
 app = FastAPI()
 
@@ -37,3 +37,4 @@ app.include_router(tag_router.router)
 app.include_router(platform_router.router)
 app.include_router(skill_router.router)
 app.include_router(focus_router.router)
+app.include_router(auth_router.auth_router)
