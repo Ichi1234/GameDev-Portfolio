@@ -33,9 +33,13 @@ export default function MainForm() {
         setLoading(true);
         try {
             const method = hasProfile ? "PUT" : "POST";
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string,string> = { "Content-Type": "application/json" };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const res = await fetch(`${API_BASE}/profiles/`, {
                 method,
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({
                     portfolio_title: portfolioTitle,
                     main_quote: mainQuote,

@@ -19,9 +19,13 @@ export default function TagPlatForm() {
         const trimmed = name.trim();
         if (!trimmed) return;
         setTagLoading(true);
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: Record<string,string> = { "Content-Type": "application/json" };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         fetch(`${API_BASE}/tag/`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify({ name: trimmed }),
         })
             .then((res) => res.json())
@@ -44,9 +48,13 @@ export default function TagPlatForm() {
         const trimmed = name.trim();
         if (!trimmed) return;
         setPlatformLoading(true);
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: Record<string,string> = { "Content-Type": "application/json" };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         fetch(`${API_BASE}/platform/`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify({ name: trimmed }),
         })
             .then((res) => res.json())
@@ -67,7 +75,11 @@ export default function TagPlatForm() {
 
     const handleRemove = (componentType : string, componentID : number) => {
         if (componentType === "tag") {
-            fetch(`${API_BASE}/tag/${componentID}`, { method: "DELETE" })
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            fetch(`${API_BASE}/tag/${componentID}`, { method: "DELETE", headers })
                 .then((res) => res.json())
                 .then(() => setTagData((prev) => prev.filter((t) => t.id !== componentID)))
                 .catch(() => setTagData((prev) => prev.filter((t) => t.id !== componentID)));
@@ -76,7 +88,11 @@ export default function TagPlatForm() {
         }
 
         if (componentType === "platform") {
-            fetch(`${API_BASE}/platform/${componentID}`, { method: "DELETE" })
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            fetch(`${API_BASE}/platform/${componentID}`, { method: "DELETE", headers })
                 .then((res) => res.json())
                 .then(() => setPlatformData((prev) => prev.filter((p) => p.id !== componentID)))
                 .catch(() => setPlatformData((prev) => prev.filter((p) => p.id !== componentID)));

@@ -171,10 +171,15 @@ export default function GameAddForm({ setScreen }: Props) {
         if (gameVideo) gameVideo.forEach((f) => form.append("videos", f));
 
         try {
-            const res = await fetch(`${API_BASE}/games/`, {
-                method: "POST",
-                body: form,
-            });
+                const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+                const headers: Record<string,string> = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(`${API_BASE}/games/`, {
+                    method: "POST",
+                    headers,
+                    body: form,
+                });
 
             if (res.ok) {
                 setScreen("home");

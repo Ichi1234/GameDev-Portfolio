@@ -32,7 +32,11 @@ export default function GameHomeForm({ setScreen, setSelectedGame }: Props) {
     const handleRemove = async (gameID: number) => {
         if (!confirm("Delete this game?")) return;
         try {
-            const res = await fetch(`${API_BASE}/games/${gameID}`, { method: "DELETE" });
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const res = await fetch(`${API_BASE}/games/${gameID}`, { method: "DELETE", headers });
             if (res.ok) {
                 setGameLst((prev) => prev.filter((game) => game.id !== gameID));
             } else {
