@@ -1,0 +1,7 @@
+# input List of your emails to notify every email when job applicants contact
+JOB_CONTACT_EMAILS = [john@gmail.com, ricardo@gmail.com, pk@gmail.com, titykung@gmail.com] 
+
+# OAuth Environment Values
+SECRET_KEY=your-secret-key-for-encode-token
+ALGORITHM=algorithm-for-encode-token
+GOOGLE_CLIENT_ID=your-google-glient-id
