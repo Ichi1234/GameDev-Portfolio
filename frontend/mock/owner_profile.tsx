@@ -1,7 +1,7 @@
 import { OwnerProfile } from "@/types/owner_profile";
 
 export const MockOwnerProfile: OwnerProfile = {
-  portfolio_title: "Kasidet Uthaiwiwatkul",
+  name: "Kasidet Uthaiwiwatkul",
   main_quote: "May my <span class=\"text-primary\">game</span> bring you <br/>challenges and difficulties",
   sub_quote: "Crafting hardcore experiences through mechanics, systems, and <br/>immersive world design.",
 

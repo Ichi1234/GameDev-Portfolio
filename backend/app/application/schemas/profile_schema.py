@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class ProfileCreate(BaseModel):
-    portfolio_title : str
+    name : str
     main_quote : str
     sub_quote : str
     introduction : str

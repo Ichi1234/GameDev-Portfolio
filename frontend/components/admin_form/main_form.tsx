@@ -4,7 +4,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function MainForm() {
 
-    const [portfolioTitle, setPortfolioTitle] = useState("");
+    const [name, setName] = useState("");
     const [mainQuote, setMainQuote] = useState("");
     const [subQuote, setSubQuote] = useState("");
     const [introduction, setIntroduction] = useState("");
@@ -17,7 +17,7 @@ export default function MainForm() {
             .then((res) => res.json())
             .then((data) => {
                 if (!data || data.error) return;
-                setPortfolioTitle(data.portfolio_title || "");
+                setName(data.name || "");
                 setMainQuote(data.main_quote || "");
                 setSubQuote(data.sub_quote || "");
                 setIntroduction(data.introduction || "");
@@ -41,7 +41,7 @@ export default function MainForm() {
                 method,
                 headers,
                 body: JSON.stringify({
-                    portfolio_title: portfolioTitle,
+                    name: name,
                     main_quote: mainQuote,
                     sub_quote: subQuote,
                     introduction: introduction,
@@ -66,11 +66,11 @@ export default function MainForm() {
         <form className="flex flex-col gap-6 font-title" onSubmit={(e) => e.preventDefault()}>
 
             <div>
-                <label className="text-admintitle">Portfolio Title</label>
+                <label className="text-admintitle">Name</label>
                 <input
-                    value={portfolioTitle}
-                    onChange={(e) => setPortfolioTitle(e.target.value)}
-                    placeholder="Enter portfolio title..."
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter name..."
                     className="input-style"
                 />
             </div>
