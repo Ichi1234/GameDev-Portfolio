@@ -8,9 +8,10 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
 from backend.app.application.security import require_role
-from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GamePhoto, GameVideo
+from backend.app.data.models.game_model import Game, GameTag, GamePlatform, GameChangelog, GamePhoto, GameVideo, GameFollow
 from backend.app.data.models.tag_platform_model import Tag, Platform
 from backend.app.application.schemas.game_schema import GameCreate
+from backend.app.application.services.email_service import send_game_update_to_subscribers
 
 
 STORAGE_BASE = Path(__file__).resolve().parents[4] / "backend" / "storage" / "games"
@@ -43,6 +44,9 @@ def get_game(db: Session = Depends(get_db)):
 
         photos = [p.file_path for p in db.query(GamePhoto).filter(GamePhoto.game_id == g.id).all()]
         videos = [v.file_path for v in db.query(GameVideo).filter(GameVideo.game_id == g.id).all()]
+
+        subs = db.query(GameFollow).filter(GameFollow.game_id == g.id).all()
+        subscriber_ids = [s.user_id for s in subs] if subs else []
         changelogs = [
             {
                 "id": c.id,
@@ -69,6 +73,7 @@ def get_game(db: Session = Depends(get_db)):
                 "photos": photos,
                 "videos": videos,
                 "changelogs": changelogs,
+                "subscribers": subscriber_ids,
             }
         )
 
@@ -509,6 +514,12 @@ def update_game(
                 date=c.date,
             )
             db.add(changelog)
+
+            try:
+                send_game_update_to_subscribers(game.id, c.description or "", db)
+            except Exception:
+                pass
+
 
     db.commit()
 

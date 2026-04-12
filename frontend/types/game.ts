@@ -16,7 +16,8 @@ export type Game = {
 
   photos: string[]
   videos: string[]
-
+  
+  subscribers: number[]
   changelogs: GameChangeLog[]
 }
 

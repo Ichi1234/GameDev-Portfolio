@@ -31,3 +31,7 @@ class GameTagCreate(BaseModel):
 
 class GamePlatformCreate(BaseModel):
     name : str
+
+class GameFollowCreate(BaseModel):
+    game_id: int
+    user_id: Optional[int] = None

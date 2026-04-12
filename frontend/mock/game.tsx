@@ -16,6 +16,7 @@ export const MockGamesData: Game[] = [
     photos: ["/img/mockup/Screenshot_2.png", "/img/mockup/Screenshot_3.png", "/img/mockup/Screenshot_4.png", "/img/mockup/Screenshot_5.png"],
     videos: ["/video/mockup/Raging_Cacophony_Demo.mp4"],
 
+    subscribers: [],
     changelogs: [
       {
       id: 1,
@@ -48,6 +49,8 @@ export const MockGamesData: Game[] = [
     platforms: ["PC"],
     photos: [],
     videos: [],
+
+    subscribers: [],
 
     changelogs: [
       {
