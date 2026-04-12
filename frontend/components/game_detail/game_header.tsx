@@ -36,7 +36,7 @@ export default function GameHeader({ game }: Props) {
       
       {/* Type */}
       <div className="w-fit px-3 py-1 rounded-sm text-sm bg-black border border-primary/40 text-primary uppercase">
-        {game.type}
+          { game.type || (game.tags?.[0] ? game.tags[0] + " GAME" : "GAME") }
       </div>
 
       {/* Title + Meta */}
