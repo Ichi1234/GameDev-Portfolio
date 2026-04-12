@@ -1,17 +1,42 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function SignUp() {
     const [role, setRole] = useState<'visitor' | 'recruiter' | null>(null);
     const [username, setUsername] = useState<string>('');
+    const [missingNotice] = useState<boolean>(() => {
+        try {
+            if (typeof window === 'undefined') return false;
+            const params = new URLSearchParams(window.location.search);
+            return params.get('missing') === '1';
+        } catch (e) {
+            return false;
+        }
+    });
 
-    const handleGoogleLogin = () => {
+    const isReady = Boolean(role) && username.trim() !== '';
+
+    useEffect(() => {
+        try {
+            if (missingNotice && typeof window !== 'undefined') {
+                const clean = window.location.pathname;
+                window.history.replaceState({}, document.title, clean);
+            }
+        } catch (e) {
+            // ignore
+        }
+    }, [missingNotice]);
+
+    const handleGoogleLogin = (action: 'register' | 'signin') => {
         const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
         const redirectUri = "http://localhost:3000/auth/callback";
 
-        if (role) localStorage.setItem('selected_role', role);
-        if (username) localStorage.setItem('selected_username', username);
+        localStorage.setItem('auth_action', action);
+        if (action === 'register') {
+            if (role) localStorage.setItem('selected_role', role);
+            if (username) localStorage.setItem('selected_username', username);
+        }
 
         const url = `https://accounts.google.com/o/oauth2/v2/auth?` +
             `client_id=${encodeURIComponent(clientId || '')}` +
@@ -46,15 +71,22 @@ export default function SignUp() {
 
                 <h2 className="font-title font-bold text-2xl mt-2 text-white">Register</h2>
 
+                {missingNotice && (
+                    <div className="w-full px-4 py-2 mt-2 rounded bg-red-900 text-red-200 text-sm">
+                        Account not found. Please register first or sign up.
+                    </div>
+                )}
+
                 <div className="self-start w-full">
                     <label className="block text-textsubcolor mb-1" htmlFor="name">Username</label>
-                    <input name="name" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Type your username here..." className="w-full pb-2 focus:outline-none focus:ring-0 border-b border-primary/40 focus:border-primary" />    
+                    <input name="name" autoComplete='off' value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Type your username here..." className="w-full pb-2 focus:outline-none focus:ring-0 border-b border-primary/40 focus:border-primary" />    
                 </div>
                 
-                <button 
-                    onClick={handleGoogleLogin}
-                    type="button" 
-                    className="w-full text-sm mt-4 px-6 py-3 bg-primary font-semibold text-black rounded-lg"
+                <button
+                    onClick={() => handleGoogleLogin('register')}
+                    type="button"
+                    disabled={!isReady}
+                    className={`w-full text-sm mt-4 px-6 py-3 bg-primary font-semibold text-black rounded-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     Register with Google OAuth
                 </button>
@@ -62,7 +94,7 @@ export default function SignUp() {
                 <span className="text-sm text-textsubcolor">
                     Already have an account?{' '}
                     <span
-                        onClick={handleGoogleLogin}
+                        onClick={() => handleGoogleLogin('signin')}
                         className="text-primary cursor-pointer hover:underline"
                     >
                         Sign in with Google

@@ -13,6 +13,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 @auth_router.post("/google")
 def google_auth(body: dict, db: Session = Depends(get_db)):
     token = body.get("token")
+    action = body.get("action")  
     role_name = body.get("role")
     username_from_body = body.get("username")
     if not token:
@@ -33,6 +34,9 @@ def google_auth(body: dict, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
+        if action == 'signin':
+            raise HTTPException(status_code=404, detail="account not found")
+
         username_val = username_from_body or user_info.get("name")
         user = User(
             email=email,
