@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
-from backend.app.application.services.email_service import send_job_contact
+from backend.app.application.services.email_service import send_job_contact as svc_send_job_contact
 from backend.app.application.security import get_current_user
 
 
@@ -27,7 +27,7 @@ def send_email_api(data: EmailRequest, payload=Depends(get_current_user)):
     if user_role != "recruiter":
         raise HTTPException(status_code=403, detail="Only users with recruiter role can send job contact messages")
 
-    ok, detail = send_job_contact(sender_email, data.subject, data.message)
+    ok, detail = svc_send_job_contact(sender_email, data.subject, data.message)
     if not ok:
         raise HTTPException(status_code=500, detail=f"Failed to send email: {detail or 'unknown error'}")
     return {"message": "Emails sent successfully"}
