@@ -1,54 +1,23 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.app.data.database import get_db
-from backend.app.data.models.profile_model import OwnerFocus
 from backend.app.application.schemas.profile_schema import FocusCreate
 from backend.app.application.security import require_role
+from backend.app.application.services.focus_service import create_focus as svc_create_focus, delete_focus as svc_delete_focus, get_focus as svc_get_focus
 
 router = APIRouter(prefix="/focus", tags=["Focus"])
 
 
 @router.post("/")
 def create_focus(body: FocusCreate, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
-    focus = OwnerFocus(
-        focus = body.name
-    )
-
-    db.add(focus)
-    db.commit()
-    db.refresh(focus)
-
-    return {
-        "id": focus.id,
-        "name" : focus.focus
-    }
+    return svc_create_focus(body, db, _user)
 
 
 @router.delete("/{remove_id}")
 def delete_focus(remove_id: int, db: Session = Depends(get_db), _user=Depends(require_role('developer'))):
-    focus = db.query(OwnerFocus).filter(OwnerFocus.id == remove_id).first()
-
-    if not focus:
-        return {"error": "Focus not found"}
-
-    response = {
-        "id": focus.id,
-        "name": focus.focus
-    }
-
-    db.delete(focus)
-    db.commit()
-
-    return response
+    return svc_delete_focus(remove_id, db, _user)
 
 
 @router.get("/")
 def get_focus(db: Session = Depends(get_db)):
-    focuses = db.query(OwnerFocus).all()
-
-    if not focuses:
-        return []
-
-    response = [{"id": f.id, "name": f.focus} for f in focuses]
-
-    return response
+    return svc_get_focus(db)
