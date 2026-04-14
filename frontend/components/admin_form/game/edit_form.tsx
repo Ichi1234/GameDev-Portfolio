@@ -278,7 +278,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </span>
 
             <div>
-                <label className="text-admintitle">Title</label>
+                <label className="text-admintitle">Title (Required)</label>
                 <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -288,7 +288,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Description</label>
+                <label className="text-admintitle">Description (Required)</label>
                 <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -298,7 +298,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Game Repository (Optional)</label>
+                <label className="text-admintitle">Game Repository</label>
                 <input
                     value={repository}
                     onChange={(e) => setRepository(e.target.value)}
@@ -308,7 +308,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Game Type (Optional)</label>
+                <label className="text-admintitle">Game Type</label>
                 <input
                     value={typeVal}
                     onChange={(e) => setTypeVal(e.target.value)}
@@ -318,7 +318,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Game Tags</label>
+                <label className="text-admintitle">Game Tags (Required)</label>
                 <div className="dropdown-input flex items-center" onClick={() => setTagDropdownOpen(!tagDropdownOpen)}>
                     <div id="tag-container" className="flex gap-2">
                         {selectedTags.length ? (
@@ -374,7 +374,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Game Platforms</label>
+                <label className="text-admintitle">Game Platforms (Required)</label>
 
                 <div className="dropdown-input flex items-center" onClick={() => setPlatformDropdownOpen(!platformDropdownOpen)}>
                     <div id="platform-container" className="flex gap-2">
@@ -436,7 +436,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
 
             <div className="flex justify-between">
                 <div className="w-[48%]">
-                    <label className="text-admintitle">Start Date</label>
+                    <label className="text-admintitle">Start Date (Required)</label>
                     <input
                         className="input-style"
                         type="date"
@@ -446,7 +446,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
                 </div>
 
                 <div className="w-[48%]">
-                    <label className="text-admintitle">Release Date  (Optional)</label>
+                    <label className="text-admintitle">Release Date</label>
                     <input
                         className="input-style"
                         type="date"
@@ -457,7 +457,7 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
             </div>
 
             <div>
-                <label className="text-admintitle">Download Link (Optional)</label>
+                <label className="text-admintitle">Download Link</label>
                 <input
                     value={downloadLink}
                     onChange={(e) => setDownloadLink(e.target.value)}
