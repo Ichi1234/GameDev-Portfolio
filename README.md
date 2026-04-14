@@ -191,62 +191,10 @@ The system implements:
 - SQLite
 
 
-# Installation & Setup
+## Installation & Setup
 
-## Clone Repository
-```
+Development and deployment instructions (local install and Docker) are in the separate guide: [Installation Guide](INSTALLATION.md)
 
-git clone https://github.com/your-username/your-repository.git  
-cd gamedev-resume  
-```
-
-## Backend Setup
-```
-cd backend  
-
-python -m venv venv  
-```
-
-# Mac/Linux
-```
-source venv/bin/activate  
-```
-
-# Windows
-```
-venv\Scripts\activate  
-```
-
-### Install Dependencies:
-```
-pip install -r requirements.txt  
-```
-
-### Run backend:
-
-```
-uvicorn backend.main:app --reload
-```
-
-Backend runs at:  
-http://localhost:8000  
-
----
-
-## Frontend Setup
-
-```
-cd frontend  
-```
-### Install Dependencies:
-```
-npm install  
-npm run dev  
-```
-Frontend runs at:  
-http://localhost:3000  
-
----
 
 # How to Run the System
 
