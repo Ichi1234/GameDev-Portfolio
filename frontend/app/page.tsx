@@ -66,7 +66,7 @@ export default function Home() {
           {displayProfile.hero_title || "Indie Game Developer"}
         </p>
 
-        <h1 dangerouslySetInnerHTML={{ __html: displayProfile.main_quote }} className="uppercase font-title font-bold text-lg sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20"/>
+        <h1 dangerouslySetInnerHTML={{ __html: displayProfile.main_quote }} className="uppercase font-title font-bold text-xl sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20"/>
 
         <p dangerouslySetInnerHTML={{ __html: displayProfile.sub_quote }} className="font-body text-[0.55rem] sm:text-xs xl:text-lg text-textmaincolor mt-4"/>
 
@@ -82,7 +82,7 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-12">My <span className="text-primary">Games</span></h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 2xl:gap-8">         
+        <div className="grid max-w-120 md:max-w-160 lg:max-w-260 2xl:max-w-346 mx-auto grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 2xl:gap-8">         
           {displayGames.map((game) => (
             <GameCard key={game.id} game={game}/>
           ))}
@@ -97,17 +97,17 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-12">ABOUT <span className="text-primary">ME</span></h2>
 
-        <div className="grid md:grid-cols-2 gap-x-12 px-4 lg:px-60">
+        <div className="grid md:grid-cols-2 gap-x-12 px-4 sm:px-16 lg:px-60">
 
           {/* Left Grid Here */}
           <div className="flex flex-col">
             <h2 className="mb-4 text-xl text-primary font-title">Introduction</h2>
-            <p dangerouslySetInnerHTML={{ __html: displayProfile.introduction }}/>
+            <p className="text-xs sm:text-base" dangerouslySetInnerHTML={{ __html: displayProfile.introduction }}/>
 
             <h2 className="mt-8 mb-4 text-xl text-primary font-title">Current Focus</h2>
             <ul className="ml-4">
               {displayProfile.current_focus.map((focus) => (
-                <li className="list-disc marker:text-primary" key={focus.id}>{focus.name}</li>
+                <li className="text-xs sm:text-base list-disc marker:text-primary" key={focus.id}>{focus.name}</li>
               ))}
             </ul>
           </div>
@@ -131,7 +131,7 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-4">Let&apos;s  <span className="text-primary">Collaborate</span></h2>
 
-        <p className="max-w-2xl text-center mb-8">
+        <p className="max-w-2xl text-center mb-8 text-xs sm:text-base">
           Interested in collaboration, internship opportunities, or discussing game systems and architecture? Feel free to reach out.
         </p>
 

@@ -12,7 +12,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
   export default function GameCard({ game }: Props) {
     return (
       <Link href={`/game/${convertGameNameToId(game.title)}`} className="block">
-        <div className="bg-cardbackground min-w-80 max-w-110 2xl:max-w-130 border-2 h-full border-[#332e2b] rounded-xl">
+        <div className="bg-cardbackground w-full border-2 h-full border-[#332e2b] rounded-xl">
 
           {/* Image Section */}
           <div className="relative aspect-video">

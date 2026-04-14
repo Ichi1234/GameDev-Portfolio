@@ -7,8 +7,8 @@ type Props = {
 export default function SkillChip(skill : Props) {
     return (
         <div className="bg-[#272321] inline border-2 border-[#2b2826] p-4 rounded-xl">
-            <h3 className="text-white font-title">{skill.core_skill.name}</h3>
-            <p className="text-textsubcolor text-xs">{skill.core_skill.description}</p>
+            <h3 className="text-white font-title text-xs sm:text-base">{skill.core_skill.name}</h3>
+            <p className="text-textsubcolor text-[0.60rem] sm:text-xs">{skill.core_skill.description}</p>
         </div>
     );
 }
