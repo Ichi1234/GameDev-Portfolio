@@ -28,6 +28,7 @@ export default function Home() {
   };
   const displayGames = (games && games.length > 0) ? games : [placeholderGame];
   const placeholderProfile = {
+    hero_title: "Your title here (Indie Game Developer)",
     main_quote: "<span>Your Main Quote</span>",
     sub_quote: "Your Sub Quote",
     introduction:
@@ -41,6 +42,7 @@ export default function Home() {
     main_quote: (profile && profile.main_quote) || placeholderProfile.main_quote,
     sub_quote: (profile && profile.sub_quote) || placeholderProfile.sub_quote,
     introduction: (profile && profile.introduction) || placeholderProfile.introduction,
+    hero_title: (profile && profile.hero_title) || placeholderProfile.hero_title,
     current_focus:
       profile && Array.isArray(profile.current_focus) && profile.current_focus.length > 0
         ? profile.current_focus
@@ -61,7 +63,7 @@ export default function Home() {
       >
         
         <p className="uppercase text-[0.6rem] sm:text-xs xl:text-lg tracking-[0.35em]">
-          Indie Game Developer
+          {displayProfile.hero_title || "Indie Game Developer"}
         </p>
 
         <h1 dangerouslySetInnerHTML={{ __html: displayProfile.main_quote }} className="uppercase font-title font-bold text-lg sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20"/>

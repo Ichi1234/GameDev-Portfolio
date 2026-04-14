@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class ProfileCreate(BaseModel):
     name : str
+    hero_title : str
     main_quote : str
     sub_quote : str
     introduction : str

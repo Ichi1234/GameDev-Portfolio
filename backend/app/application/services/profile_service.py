@@ -4,6 +4,7 @@ from backend.app.data.models.profile_model import OwnerProfile, OwnerFocus, Owne
 def create_profile(body, db: Session, _user=None):
     profile = OwnerProfile(
         name=body.name,
+        hero_title=body.hero_title,
         main_quote=body.main_quote,
         sub_quote=body.sub_quote,
         introduction=body.introduction,
@@ -16,6 +17,7 @@ def create_profile(body, db: Session, _user=None):
 
     return {
         "name": profile.name,
+        "hero_title": profile.hero_title,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
@@ -30,6 +32,7 @@ def change_profile(body, db: Session, _user=None):
         return {"error": "Profile not found"}
 
     profile.name = body.name
+    profile.hero_title = body.hero_title
     profile.main_quote = body.main_quote
     profile.sub_quote = body.sub_quote
     profile.introduction = body.introduction
@@ -40,6 +43,7 @@ def change_profile(body, db: Session, _user=None):
 
     return {
         "name": profile.name,
+        "hero_title": profile.hero_title,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,
@@ -57,6 +61,7 @@ def get_profile(db: Session):
 
     return {
         "name": profile.name,
+        "hero_title": profile.hero_title,
         "main_quote": profile.main_quote,
         "sub_quote": profile.sub_quote,
         "introduction": profile.introduction,

@@ -13,6 +13,7 @@ type Props = {
 export default function ProfileProvider({ children }: Props) {
   const emptyProfile: OwnerProfile = {
     name: "",
+    hero_title: "",
     main_quote: "",
     sub_quote: "",
     introduction: "",
@@ -27,6 +28,7 @@ export default function ProfileProvider({ children }: Props) {
   type ProfileResponse = {
     id?: number;
     name?: string;
+    hero_title?: string;
     main_quote?: string;
     sub_quote?: string;
     introduction?: string;
@@ -41,15 +43,15 @@ export default function ProfileProvider({ children }: Props) {
     const base = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
     const url = `${base.replace(/\/$/, "")}/profiles/`;
 
-    let mounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
 
-    fetch(url)
-      .then((res) => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(url, { signal });
         if (!res.ok) throw new Error("Failed to fetch profile");
-        return res.json() as Promise<ProfileResponse>;
-      })
-      .then((data) => {
-        if (!mounted) return;
+        const data = (await res.json()) as ProfileResponse;
+        if (signal.aborted) return;
 
         const mappedCurrentFocus: Focuses[] = Array.isArray(data.current_focus)
           ? data.current_focus.map((f) => {
@@ -73,6 +75,7 @@ export default function ProfileProvider({ children }: Props) {
 
         const mapped: OwnerProfile = {
           name: data.name ?? "",
+          hero_title: data.hero_title ?? "",
           main_quote: data.main_quote ?? "",
           sub_quote: data.sub_quote ?? "",
           introduction: data.introduction ?? "",
@@ -82,14 +85,15 @@ export default function ProfileProvider({ children }: Props) {
         };
 
         setProfile(mapped);
-      })
-      .catch((err) => {
-        // leave empty profile on error; components can handle empty state
-        console.error("Error fetching profile:", err);
-      });
+      } catch (err) {
+       
+      }
+    };
+
+    fetchProfile();
 
     return () => {
-      mounted = false;
+      controller.abort();
     };
   }, []);
 
