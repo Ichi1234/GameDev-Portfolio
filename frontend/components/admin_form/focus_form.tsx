@@ -8,6 +8,7 @@ export default function FocusForm() {
     const [focusData, setFocusData] = useState<{ id: number; name: string }[]>([]);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
+    const isReady = name.trim() !== "";
     
     
     const addFocus = () => {
@@ -78,9 +79,14 @@ export default function FocusForm() {
                 />
             </div>
 
-            <button type="button" onClick={addFocus} className="btn-primary">
-                {loading ? "Adding..." : "ADD"}
-            </button>
+            <button
+                        type="button"
+                        onClick={addFocus}
+                        className={`btn-primary ${(!isReady || loading) ? 'cursor-not-allowed! opacity-70!' : ''}`}
+                        disabled={!isReady || loading}
+                    >
+                        {loading ? "Adding..." : "ADD"}
+                    </button>
 
             <h2 className="font-title font-bold text-admintitle text-xl">Focus List</h2>
             
