@@ -16,12 +16,6 @@ const rajdhani = Rajdhani({
   variable: "--font-rajdhani",
 });
 
-const mockUser = {
-  id: 1,
-  username: "Kasidet Uthaiwiwatkul",
-  google_id: null,
-  role_id: 1
-};
 
 export const metadata: Metadata = {
   title: "Game Dev Resume",
