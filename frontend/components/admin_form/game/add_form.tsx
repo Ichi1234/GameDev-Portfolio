@@ -38,6 +38,9 @@ export default function GameAddForm({ setScreen }: Props) {
     const [date, setDate] = useState("");
     const [clDescription, setClDescription] = useState("");
     const [loading, setLoading] = useState(false);
+    const [startDate, setStartDate] = useState("");
+    const [releaseDate, setReleaseDate] = useState("");
+    const isReady = title.trim() !== "" && description.trim() !== "" && selectedTags.length > 0 && platforms.length > 0 && startDate.trim() !== "";
 
     useEffect(() => {
         return () => {
@@ -155,8 +158,8 @@ export default function GameAddForm({ setScreen }: Props) {
             title: title,
             description: description,
             type: typeVal,
-            start_date: null,
-            release_date: null,
+            start_date: startDate && startDate.length ? startDate : null,
+            release_date: releaseDate && releaseDate.length ? releaseDate : null,
             repository_link: repository,
             download_link: downloadLink,
             tags: selectedTags,
@@ -328,12 +331,12 @@ export default function GameAddForm({ setScreen }: Props) {
             <div className="flex justify-between">
                 <div className="w-[48%]">
                     <label className="text-admintitle">Start Date (Required)</label>
-                    <input className="input-style" type="date" />
+                    <input className="input-style" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 </div>
 
                 <div className="w-[48%]">
                     <label className="text-admintitle">Release Date</label>
-                    <input className="input-style" type="date" />
+                    <input className="input-style" type="date" value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} />
                 </div>
             </div>
 
@@ -429,7 +432,13 @@ export default function GameAddForm({ setScreen }: Props) {
                 })}
             </div>
 
-            <button type="submit" className="btn-primary" disabled={loading}>{loading ? "Adding..." : "ADD"}</button>
+            <button
+                type="submit"
+                className={`btn-primary ${(!isReady || loading) ? 'cursor-not-allowed! opacity-70!' : ''}`}
+                disabled={!isReady || loading}
+            >
+                {loading ? "Adding..." : "ADD"}
+            </button>
         </form>
     );
 }

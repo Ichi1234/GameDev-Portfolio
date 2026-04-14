@@ -16,7 +16,7 @@ export default function Home() {
     download_link: "",
     cover_img_path: "/img/default_cover_img.png",
     type: "DEMO",
-    start_date: "",
+    start_date: "2026-01-01",
     release_date: "",
     repository_link: "",
     tags: ["PLACEHOLDER"],

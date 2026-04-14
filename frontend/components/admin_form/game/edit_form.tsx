@@ -57,6 +57,8 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
     const [startDate, setStartDate] = useState<string>(gameData.start_date || "");
     const [releaseDate, setReleaseDate] = useState<string>(gameData.release_date || "");
 
+    const isReady = title.trim() !== "" && description.trim() !== "" && selectedTags.length > 0 && platforms.length > 0 && startDate.trim() !== "";
+
     // Changelogs
     const initialChangelogs = (gameData.changelogs || []).map((c) => ({
         version: c.version,
@@ -656,7 +658,11 @@ export default function GameEditForm({ setScreen, gameData }: Props) {
 
             </div>
 
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button
+                type="submit"
+                className={`btn-primary ${(!isReady || loading) ? 'cursor-not-allowed! opacity-70!' : ''}`}
+                disabled={!isReady || loading}
+            >
                 {loading ? "Saving..." : "UPDATE"}
             </button>
 

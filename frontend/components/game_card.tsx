@@ -12,7 +12,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
   export default function GameCard({ game }: Props) {
     return (
       <Link href={`/game/${convertGameNameToId(game.title)}`} className="block">
-        <div className="bg-cardbackground max-w-110 2xl:max-w-130 border-2 h-full border-[#332e2b] rounded-xl">
+        <div className="bg-cardbackground min-w-80 max-w-110 2xl:max-w-130 border-2 h-full border-[#332e2b] rounded-xl">
 
           {/* Image Section */}
           <div className="relative aspect-video">
@@ -38,7 +38,7 @@ import { convertGameNameToId } from "@/utils/gamename_to_id";
           <div className="p-4">
             <div className="flex justify-between items-baseline">
               <h2 className="text-white font-title text-lg sm:text-xl lg:text-2xl 2xl:text-3xl">{ game.title }</h2>
-              <p className="text-xs 2xl:text-sm text-textsubcolor"> { game.release_date != "" ? formatDate(game.release_date) : "In Progress" } </p>
+              <p className="text-xs 2xl:text-sm text-textsubcolor"> { game.release_date ? formatDate(game.release_date) : "In Progress" } </p>
             </div>
 
             <p dangerouslySetInnerHTML={{ __html: game.description }} className="mt-2 line-clamp-4 text-xs lg:text-sm min-h-20"/>
