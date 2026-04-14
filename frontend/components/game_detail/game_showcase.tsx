@@ -76,8 +76,8 @@ export default function GameShowcase({ game }: Props) {
                 key={index}
                 onClick={() => setSelectedIndex(index)}
                 className={`
-                  relative w-32 h-16 sm:h-20 rounded-md overflow-hidden cursor-pointer border
-                  ${index === selectedIndex ? "border-primary" : "border-[#332e2b]"}
+                  relative w-32 h-16 sm:h-20 rounded-md overflow-hidden cursor-pointer border-2 transition 
+                  ${index === selectedIndex ? "border-primary" : "border-[#332e2b] hover:border-primary/60"}
                 `}
               >
                 {item.type === "video" ? (

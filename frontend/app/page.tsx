@@ -156,7 +156,7 @@ export default function Home() {
             </svg>
           </a>
 
-          <a href={displayProfile.github_link} target="_blank" rel="noopener noreferrer" className="bg-[#272321] flex justify-evenly items-center gap-2 border border-[#2b2826] rounded-lg px-8 py-3">
+          <a href={displayProfile.github_link} target="_blank" rel="noopener noreferrer" className="hover:text-primary bg-[#272321] flex justify-evenly items-center gap-2 border transition border-[#2b2826] hover:border-primary/40 rounded-lg px-8 py-3">
             
             {/* Github Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
