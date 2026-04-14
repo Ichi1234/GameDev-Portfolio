@@ -112,6 +112,7 @@ export default function SkillForm() {
                         <ListItem
                             key={skill.id}
                             title={skill.name}
+                            description={skill.description}
                             onRemove={() => handleRemove(skill.id)}
                         />
                     );
