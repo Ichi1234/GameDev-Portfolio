@@ -53,11 +53,9 @@ export default function MainForm() {
             });
 
             const data = await res.json();
-            if (data && !data.error) {
-                alert(hasProfile ? "Profile updated" : "Profile saved");
-            } else {
+            if (data && data.error) {
                 alert("Save failed");
-            }
+            } 
         } catch (err) {
             alert(`Save failed : ${err}`);
         } finally {
