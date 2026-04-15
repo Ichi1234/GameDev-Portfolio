@@ -167,6 +167,7 @@ Main Tables and sample columns (from `backend/app/data/models`):
 - `tags`: `id`, `name`
 - `platforms`: `id`, `name`
 
+
 Relationships:
 
 - `users.role_id` → `roles.id` (one user has one role)
