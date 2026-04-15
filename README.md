@@ -123,14 +123,17 @@ Data Layer          → SQLite (Database)
 
 
 ## Data Layer
+SQLite database (development) with SQLAlchemy models located under `backend/app/data/models/`.
 
-- SQLite database
-- Stores:
-  - Users
-  - Roles
-  - Permissions
-  - Games
-  - Contact messages
+- Location: `backend/app/data/database.py` and model files in `backend/app/data/models/`.
+- Key model files and primary tables they define:
+  - `game_model.py`: `games`, `game_tags`, `game_platforms`, `game_photos`, `game_videos`, `game_changelogs`, `game_follows`.
+  - `profile_model.py`: `profiles`, `skills`, `focuses`.
+  - `tag_platform_model.py`: `tags`, `platforms`.
+  - `user_model.py`: `roles`, `users`.
+
+- ORM: SQLAlchemy `Base` is used to declare models. See `backend/app/data/database.py` for engine/session setup.
+- Notes: This repo uses SQLite for simplicity. For production, migrate to a server-grade RDBMS and add a migration tool such as Alembic.
 
 
 # Architecture Characteristics
@@ -147,19 +150,37 @@ This system emphasizes:
 
 # Database Design
 
-Main Tables:
+Main Tables and sample columns (from `backend/app/data/models`):
 
-- users
-- roles
-- permissions
-- games
-
+- `users`: `id`, `email`, `username`, `google_id`, `role_id`
+- `roles`: `id`, `name`
+- `games`: `id`, `title`, `description`, `download_link`, `cover_img_path`, `type`, `start_date`, `release_date`, `repository_link`
+- `game_tags`: `game_id`, `tag_id` (many-to-many)
+- `game_platforms`: `game_id`, `platform_id` (many-to-many)
+- `game_photos`: `id`, `game_id`, `file_path`
+- `game_videos`: `id`, `game_id`, `file_path`
+- `game_changelogs`: `id`, `game_id`, `version`, `description`, `date`
+- `game_follows`: `game_id`, `user_id` (follow relationship)
+- `profiles`: `id`, `name`, `hero_title`, `main_quote`, `sub_quote`, `introduction`, `github_link`
+- `skills`: `id`, `skill`, `description`
+- `focuses`: `id`, `focus`
+- `tags`: `id`, `name`
+- `platforms`: `id`, `name`
 
 Relationships:
 
-- One user has one role
-- One role has multiple permissions
-- Games are managed by Developer
+- `users.role_id` → `roles.id` (one user has one role)
+- Games ↔ Tags: many-to-many via `game_tags`
+- Games ↔ Platforms: many-to-many via `game_platforms`
+- Games have many photos, videos, and changelogs (one-to-many)
+- Users can follow games via `game_follows` (many-to-many semantics)
+- Profile-related lists (skills, focuses) are represented as separate tables linked conceptually to the owner's profile
+
+Notes:
+
+- Models live in `backend/app/data/models/` (see `game_model.py`, `profile_model.py`, `tag_platform_model.py`, `user_model.py`).
+- SQLAlchemy `Base` is used for model declarations; DB setup is in `backend/app/data/database.py`.
+- This project uses SQLite for development. For production, add a migration tool (Alembic) and consider a server-grade RDBMS.
 
 
 # Authentication & Authorization
