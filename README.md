@@ -207,17 +207,79 @@ Development and deployment instructions (local install and Docker) are in the se
 
 # Screenshots
 
-TBA
+## Home Page
+### With Data
+![Home Page with data](doc_img/home_page.png)
+
+### Without Data
+![Home Page without data](doc_img/home_page_without_data.png)
 
 ---
 
+## Game Detail Page
+### With Data
+![Game Detail Page with data](doc_img/game_detail.png)
+### Without Data
+![Game Detail Page without data](doc_img/game_detail_without_data.png)
+
+---
+
+## Job Contact Page
+![Job contact Page](doc_img/job_contact_page.png)
+
+---
+
+## Sign-Up Page
+![Signup Page](doc_img/signup_page.png)
+
+---
+
+## Admin Page
+
+### Profile 
+![Profile Admin Page](doc_img/admin_for_profile.png)
+
+### Game
+![Game Admin Page](doc_img/admin_for_game.png)
+
+### Game Editing
+![Game Edit Admin Page](doc_img/admin_for_edit_game.png)
+
+
+### Focus
+![Focus Admin Page](doc_img/admin_for_focus.png)
+
+### Skill
+![Skill Admin Page](doc_img/admin_for_skill.png)
+
+### Tag & Platform
+![Tag & Platform Admin Page](doc_img/admin_for_tag_and_platform.png)
+
 # Repository Structure
 
-root/  
-│  
-├── frontend/          # Next.js  
-├── backend/           # FastAPI  
-├── README.md  
+```
+root/
+│
+├── frontend/                   # Next.js (presentation layer)
+│   ├── app/                    # Next.js routes and pages
+│   ├── components/             # Reusable UI components
+│   ├── context/                # React contexts/providers
+│   ├── public/                 # Static assets (img/, video/)
+│   ├── utils/                  # Helper functions and formatters
+│   └── (configs)               # tailwind.config.js, next.config.ts, package.json
+│
+├── backend/                    # FastAPI (application + data layer)
+│   ├── app/
+│   │   ├── application/        # routers, services, schemas, security
+│   │   └── data/               # database.py and SQLAlchemy models
+│   ├── main.py
+│   └── requirements.txt
+│
+├── docker-compose.yml
+├── INSTALLATION.md
+├── LICENSE
+└── README.md
+```
 
 ---
 
