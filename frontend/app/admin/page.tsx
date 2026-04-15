@@ -61,7 +61,7 @@ export default function AdminPage() {
                             className={`transition cursor-pointer ${
                                 activeTab === tab.key
                                     ? "text-admintitle font-bold"
-                                    : "text-admintext font-normal"
+                                    : "text-admintext font-normal hover:text-admintitle/40"
                             }`}
                         >
                             {tab.label}

@@ -9,6 +9,50 @@ export default function Home() {
   const profile = useProfile();
   const games = useGameData();
   const main_email = process.env.NEXT_PUBLIC_MAIN_EMAIL;
+  const placeholderGame = {
+    id: -1,
+    title: "Your Game Title",
+    description: "Your game description — this is a placeholder entry because no data is available.",
+    download_link: "",
+    cover_img_path: "/img/default_cover_img.png",
+    type: "DEMO",
+    start_date: "2026-01-01",
+    release_date: "",
+    repository_link: "",
+    tags: ["PLACEHOLDER"],
+    platforms: [],
+    photos: [],
+    videos: [],
+    subscribers: [],
+    changelogs: [],
+  };
+  const displayGames = (games && games.length > 0) ? games : [placeholderGame];
+  const placeholderProfile = {
+    hero_title: "Your title here (Indie Game Developer)",
+    main_quote: "<span>Your Main Quote</span>",
+    sub_quote: "Your Sub Quote",
+    introduction:
+      "A short introduction about you will appear here. Add a bio in the admin panel to replace this.",
+    current_focus: [{ id: -1, name: "Your Current Focus" }],
+    core_skills: [{ id: -1, name: "Skill A", description: "Skill A desc" }, { id: -2, name: "Skill B", description: "Skill B desc" }],
+    github_link: "#",
+  };
+
+  const displayProfile = {
+    main_quote: (profile && profile.main_quote) || placeholderProfile.main_quote,
+    sub_quote: (profile && profile.sub_quote) || placeholderProfile.sub_quote,
+    introduction: (profile && profile.introduction) || placeholderProfile.introduction,
+    hero_title: (profile && profile.hero_title) || placeholderProfile.hero_title,
+    current_focus:
+      profile && Array.isArray(profile.current_focus) && profile.current_focus.length > 0
+        ? profile.current_focus
+        : placeholderProfile.current_focus,
+    core_skills:
+      profile && Array.isArray(profile.core_skills) && profile.core_skills.length > 0
+        ? profile.core_skills
+        : placeholderProfile.core_skills,
+    github_link: (profile && profile.github_link) || placeholderProfile.github_link,
+  };
 
   return (
     <>
@@ -19,12 +63,12 @@ export default function Home() {
       >
         
         <p className="uppercase text-[0.6rem] sm:text-xs xl:text-lg tracking-[0.35em]">
-          Indie Game Developer
+          {displayProfile.hero_title || "Indie Game Developer"}
         </p>
 
-        <h1 dangerouslySetInnerHTML={{ __html: profile.main_quote }} className="uppercase font-title font-bold text-lg sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20"/>
+        <h1 dangerouslySetInnerHTML={{ __html: displayProfile.main_quote }} className="uppercase font-title font-bold text-xl sm:text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl xl:leading-18 2xl:leading-20"/>
 
-        <p dangerouslySetInnerHTML={{ __html: profile.sub_quote }} className="font-body text-[0.55rem] sm:text-xs xl:text-lg text-textmaincolor mt-4"/>
+        <p dangerouslySetInnerHTML={{ __html: displayProfile.sub_quote }} className="font-body text-[0.55rem] sm:text-xs xl:text-lg text-textmaincolor mt-4"/>
 
         <a href="#games" className="text-primary mt-8 uppercase text-[0.6rem] sm:text-xs xl:text-lg ">
           VIEW MY WORK
@@ -38,8 +82,8 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-12">My <span className="text-primary">Games</span></h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 2xl:gap-8">         
-          {games.map((game) => (
+        <div className="grid max-w-120 md:max-w-160 lg:max-w-260 2xl:max-w-346 mx-auto grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 2xl:gap-8">         
+          {displayGames.map((game) => (
             <GameCard key={game.id} game={game}/>
           ))}
         </div>
@@ -53,17 +97,17 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-12">ABOUT <span className="text-primary">ME</span></h2>
 
-        <div className="grid md:grid-cols-2 gap-x-12 px-4 lg:px-60">
+        <div className="grid md:grid-cols-2 gap-x-12 px-4 sm:px-16 lg:px-60">
 
           {/* Left Grid Here */}
           <div className="flex flex-col">
             <h2 className="mb-4 text-xl text-primary font-title">Introduction</h2>
-            <p dangerouslySetInnerHTML={{ __html: profile.introduction }}/>
+            <p className="text-xs sm:text-base" dangerouslySetInnerHTML={{ __html: displayProfile.introduction }}/>
 
             <h2 className="mt-8 mb-4 text-xl text-primary font-title">Current Focus</h2>
             <ul className="ml-4">
-              {profile.current_focus.map((focus) => (
-                <li className="list-disc marker:text-primary" key={focus.id}>{focus.name}</li>
+              {displayProfile.current_focus.map((focus) => (
+                <li className="text-xs sm:text-base list-disc marker:text-primary" key={focus.id}>{focus.name}</li>
               ))}
             </ul>
           </div>
@@ -72,7 +116,7 @@ export default function Home() {
           <div>
             <h2 className="mt-8 md:mt-0 mb-4 text-xl text-primary font-title">Core Skills</h2>         
             <div className="grid grid-cols-2 gap-4">
-              {profile.core_skills.map((skill) => (
+              {displayProfile.core_skills.map((skill) => (
                 <SkillChip key={skill.id} core_skill={skill} />
               ))}
             </div>
@@ -87,7 +131,7 @@ export default function Home() {
 
         <h2 className="font-title font-bold text-4xl mb-4">Let&apos;s  <span className="text-primary">Collaborate</span></h2>
 
-        <p className="max-w-2xl text-center mb-8">
+        <p className="max-w-2xl text-center mb-8 text-xs sm:text-base">
           Interested in collaboration, internship opportunities, or discussing game systems and architecture? Feel free to reach out.
         </p>
 
@@ -112,7 +156,7 @@ export default function Home() {
             </svg>
           </a>
 
-          <a href={profile.github_link} target="_blank" rel="noopener noreferrer" className="bg-[#272321] flex justify-evenly items-center gap-2 border border-[#2b2826] rounded-lg px-8 py-3">
+          <a href={displayProfile.github_link} target="_blank" rel="noopener noreferrer" className="hover:text-primary bg-[#272321] flex justify-evenly items-center gap-2 border transition border-[#2b2826] hover:border-primary/40 rounded-lg px-8 py-3">
             
             {/* Github Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"

@@ -15,12 +15,33 @@ export default function GameDetail() {
     const slug = params?.slug as string | undefined;
     
     const games = useGameData();
+    const game = games.find((g) => convertGameNameToId(g.title) === slug);
 
-    const game = games.find(
-        (g) => convertGameNameToId(g.title) === slug
-    );
+    const placeholderGame = {
+        id: -1,
+        title: "Your Game Title",
+        description: "This is a placeholder game. Add your game in the admin panel to replace this.",
+        download_link: "",
+        cover_img_path: "/img/default_cover_img.png",
+        type: "DEMO",
+        start_date: "",
+        release_date: "",
+        repository_link: "",
+        tags: ["tag1", "tag2", "tag3"],
+        platforms: ["platform 1", "platform 2"],
+        photos: [],
+        videos: [],
+        subscribers: [],
+        changelogs: [
+            { id: -1, game_id: -1, version: "0.0.0", date: new Date().toISOString(), description: "Placeholder changelog entry." },
+        ],
+    };
 
-    if (!game) {
+    // If game not found, but the slug matches the placeholder title, show placeholder detail
+    const placeholderSlug = convertGameNameToId(placeholderGame.title);
+    const selectedGame = game ?? (slug === placeholderSlug ? placeholderGame : null);
+
+    if (!selectedGame) {
         return <p>No game data available.</p>;
     }
 
@@ -30,8 +51,8 @@ export default function GameDetail() {
             <div className="absolute top-0 w-full h-65">
                 <Image
                     className="object-cover "
-                    src={game.cover_img_path || "/img/default_cover_img.png"}
-                    alt="Cover Image of the game"
+                    src={selectedGame.cover_img_path || "/img/default_cover_img.png"}
+                    alt={`Cover Image of ${selectedGame.title}`}
                     fill
                     unoptimized
                 />
@@ -43,20 +64,20 @@ export default function GameDetail() {
             {/* Main Description */}
             <div className="flex flex-col gap-y-2 z-10 px-12 lg:px-60 mt-40">
 
-                <GameHeader game={game}/>
+                <GameHeader game={selectedGame}/>
                 
                 <div className="flex flex-col gap-y-10 mt-12">
                     
-                    <GameInfo game={game}/>
+                    <GameInfo game={selectedGame}/>
 
-                    <GameShowcase game={game}/>
+                    <GameShowcase game={selectedGame}/>
 
 
                     <h2 className="font-title text-2xl text-white"><span className="text-primary">Change</span> Log</h2>
                     
                     <div className="text-sm rounded-xl overflow-hidden max-w-3xl border border-[#332e2b]">
 
-                        {game.changelogs.map((log, index) => (
+                        {selectedGame.changelogs.map((log, index) => (
                             <p
                                 key={log.version}
                                 className={

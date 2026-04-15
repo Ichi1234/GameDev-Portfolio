@@ -13,6 +13,7 @@ export default function TagPlatForm() {
     const [name, setName] = useState("");
     const [tagLoading, setTagLoading] = useState(false);
     const [platformLoading, setPlatformLoading] = useState(false);
+    const isReady = name.trim() !== "";
 
 
     const addTag = () => {
@@ -133,11 +134,21 @@ export default function TagPlatForm() {
                 </div>
 
             <div className="flex gap-x-4">
-                    <button type="button" onClick={addTag} className="btn-primary" disabled={tagLoading}>
+                    <button
+                        type="button"
+                        onClick={addTag}
+                        className={`btn-primary ${(!isReady || tagLoading) ? 'cursor-not-allowed! opacity-70!' : ''}`}
+                        disabled={!isReady || tagLoading}
+                    >
                         {tagLoading ? "Adding..." : "ADD TAG"}
                     </button>
 
-                    <button type="button" onClick={addPlatform} className="btn-primary" disabled={platformLoading}>
+                    <button
+                        type="button"
+                        onClick={addPlatform}
+                        className={`btn-primary ${(!isReady || platformLoading) ? 'cursor-not-allowed! opacity-70!' : ''}`}
+                        disabled={!isReady || platformLoading}
+                    >
                         {platformLoading ? "Adding..." : "ADD PLATFORM"}
                     </button>
             </div>

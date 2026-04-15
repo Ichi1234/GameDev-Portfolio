@@ -3,6 +3,7 @@ import { Focuses } from "./focus"
 
 export type OwnerProfile = {
     name: string,
+    hero_title: string,
     main_quote: string,
     sub_quote: string,
     introduction: string,

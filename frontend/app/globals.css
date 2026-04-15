@@ -32,3 +32,10 @@ label {
   @apply w-full bg-transparent border-2 border-[#c9184a94] font-body
          p-2 rounded-lg mt-2 transition cursor-pointer;
 }
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #f29e0d94 #1e1e1e;
+  }
+}

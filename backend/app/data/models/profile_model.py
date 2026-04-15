@@ -7,6 +7,7 @@ class OwnerProfile(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    hero_title = Column(String)
     main_quote = Column(String)
     sub_quote = Column(String)
     introduction = Column(String)

@@ -5,28 +5,25 @@ import React, { useState, useEffect } from 'react';
 export default function SignUp() {
     const [role, setRole] = useState<'visitor' | 'recruiter' | null>(null);
     const [username, setUsername] = useState<string>('');
-    const [missingNotice] = useState<boolean>(() => {
-        try {
-            if (typeof window === 'undefined') return false;
-            const params = new URLSearchParams(window.location.search);
-            return params.get('missing') === '1';
-        } catch (e) {
-            return false;
-        }
-    });
+    const [missingNotice, setMissingNotice] = useState<boolean>(false);
 
     const isReady = Boolean(role) && username.trim() !== '';
 
+    // Read URL params only on client after mount to avoid SSR/client markup mismatch
     useEffect(() => {
         try {
-            if (missingNotice && typeof window !== 'undefined') {
+            if (typeof window === 'undefined') return;
+            const params = new URLSearchParams(window.location.search);
+            const missing = params.get('missing') === '1';
+            if (missing) {
+                setTimeout(() => setMissingNotice(true), 0);
                 const clean = window.location.pathname;
                 window.history.replaceState({}, document.title, clean);
             }
         } catch (e) {
             // ignore
         }
-    }, [missingNotice]);
+    }, []);
 
     const handleGoogleLogin = (action: 'register' | 'signin') => {
         const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -86,7 +83,7 @@ export default function SignUp() {
                     onClick={() => handleGoogleLogin('register')}
                     type="button"
                     disabled={!isReady}
-                    className={`w-full text-sm mt-4 px-6 py-3 bg-primary font-semibold text-black rounded-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full text-sm mt-4 px-6 py-3 bg-primary font-semibold transition  text-black rounded-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/60 cursor-pointer'}`}
                 >
                     Register with Google OAuth
                 </button>

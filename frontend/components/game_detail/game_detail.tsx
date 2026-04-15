@@ -83,7 +83,7 @@ export default function GameInfo({ game }: Props) {
       {/* Buttons */}
       <div className="flex gap-x-4">
         {game.download_link ? (
-          <a href={game.download_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-2 px-6 py-3 bg-primary text-black text-sm font-semibold rounded-lg">
+          <a href={game.download_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-2 px-6 py-3 bg-primary hover:bg-primary/80 transition text-black text-sm font-semibold rounded-lg">
             DOWNLOAD
           </a>
         ) : (

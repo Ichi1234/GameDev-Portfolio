@@ -3,14 +3,17 @@ interface ListItemProps {
     onEdit?: () => void;
     onRemove: () => void;
     showEdit?: boolean;
+    description?: string | null;
 }
 
-export default function ListItem({ title, onEdit, onRemove, showEdit = false }: ListItemProps) {
+export default function ListItem({ title, onEdit, onRemove, showEdit = false, description = null }: ListItemProps) {
     return (
         <div className="flex flex-col text-black mt-4">
-            <div className="flex justify-between items-center py-3 px-5 bg-white/40 border border-[#e0e0e0] rounded-xl">
+            <div className="grid grid-cols-3 justify-between items-center py-3 px-5 bg-white/40 border border-[#e0e0e0] rounded-xl">
                 <span className="text-admintitle font-title font-bold">{title}</span>
-                <div className="flex items-center gap-2">
+                <span className="text-admintitle font-title font-bold">{description}</span>
+
+                <div className="flex justify-end items-center gap-2">
                     {showEdit && (
                         <button type="button" onClick={onEdit} className="uppercase font-semibold text-sm cursor-pointer hover:bg-[#dba8781a] border-2 border-[#dba878] text-[#dba878] px-5 py-1 rounded-lg">Edit</button>
                     )}

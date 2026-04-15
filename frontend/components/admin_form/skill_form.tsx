@@ -9,6 +9,8 @@ export default function SkillForm() {
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const isReady = name.trim() !== "" && description.trim() !== "";
+
     useEffect(() => {
         fetch(`${API_BASE}/skill/`)
             .then((res) => res.json())
@@ -90,7 +92,15 @@ export default function SkillForm() {
                 />                
             </div>
 
-            <button type="button" onClick={addSkill} className="btn-primary" disabled={loading}>
+            <button
+                type="button"
+                onClick={addSkill}
+                className={
+                    `btn-primary ${(!isReady || loading) ? 'cursor-not-allowed! opacity-70!' : ''}`
+                }
+                disabled={!isReady || loading}
+                aria-disabled={!isReady || loading}
+            >
                 {loading ? "Adding..." : "ADD"}
             </button>
 
@@ -102,6 +112,7 @@ export default function SkillForm() {
                         <ListItem
                             key={skill.id}
                             title={skill.name}
+                            description={skill.description}
                             onRemove={() => handleRemove(skill.id)}
                         />
                     );

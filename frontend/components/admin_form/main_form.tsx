@@ -5,6 +5,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 export default function MainForm() {
 
     const [name, setName] = useState("");
+        const [heroTitle, setHeroTitle] = useState("");
     const [mainQuote, setMainQuote] = useState("");
     const [subQuote, setSubQuote] = useState("");
     const [introduction, setIntroduction] = useState("");
@@ -17,6 +18,7 @@ export default function MainForm() {
             .then((res) => res.json())
             .then((data) => {
                 if (!data || data.error) return;
+                    setHeroTitle(data.hero_title || "");
                 setName(data.name || "");
                 setMainQuote(data.main_quote || "");
                 setSubQuote(data.sub_quote || "");
@@ -41,6 +43,7 @@ export default function MainForm() {
                 method,
                 headers,
                 body: JSON.stringify({
+                        hero_title: heroTitle,
                     name: name,
                     main_quote: mainQuote,
                     sub_quote: subQuote,
@@ -50,11 +53,9 @@ export default function MainForm() {
             });
 
             const data = await res.json();
-            if (data && !data.error) {
-                alert(hasProfile ? "Profile updated" : "Profile saved");
-            } else {
+            if (data && data.error) {
                 alert("Save failed");
-            }
+            } 
         } catch (err) {
             alert(`Save failed : ${err}`);
         } finally {
@@ -71,6 +72,16 @@ export default function MainForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter name..."
+                    className="input-style"
+                />
+            </div>
+
+            <div>
+                <label className="text-admintitle">Hero Title</label>
+                <input
+                    value={heroTitle}
+                    onChange={(e) => setHeroTitle(e.target.value)}
+                    placeholder="Enter hero title (e.g. Indie Game Developer)..."
                     className="input-style"
                 />
             </div>
