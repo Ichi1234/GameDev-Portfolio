@@ -83,7 +83,7 @@ export default function SignUp() {
                     onClick={() => handleGoogleLogin('register')}
                     type="button"
                     disabled={!isReady}
-                    className={`w-full text-sm mt-4 px-6 py-3 bg-primary font-semibold text-black rounded-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full text-sm mt-4 px-6 py-3 bg-primary font-semibold transition  text-black rounded-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/60 cursor-pointer'}`}
                 >
                     Register with Google OAuth
                 </button>
