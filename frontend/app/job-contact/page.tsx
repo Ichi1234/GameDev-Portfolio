@@ -7,6 +7,7 @@ export default function JobContact() {
     const [message, setMessage] = useState("");
     const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const isReady = topic.trim() !== '' && message.trim() !== '';
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -70,8 +71,8 @@ export default function JobContact() {
 
                 <button
                     type="submit"
-                    disabled={status === "sending"}
-                    className="text-sm self-start mt-4 px-6 py-2 bg-primary font-semibold text-black rounded-lg disabled:opacity-50"
+                    disabled={status === "sending" || !isReady}
+                    className={`text-sm self-start mt-4 px-6 py-2 bg-primary font-semibold text-black rounded-lg disabled:opacity-50 ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/60 cursor-pointer'}`}
                 >
                     {status === "sending" ? "SENDING..." : "SEND MESSAGE"}
                 </button>
